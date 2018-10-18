@@ -1,0 +1,110 @@
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="urn://nahodka.ru/services/eventService/schemas"
+                  xmlns:exceptions="urn://nahodka.ru/services/common/schemas/exceptions"
+                  targetNamespace="urn://nahodka.ru/services/eventService/schemas">
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                    targetNamespace="urn://nahodka.ru/services/eventService/schemas">
+            <xsd:include schemaLocation="../schemas/events-service/service-schema.xsd"/>
+        </xsd:schema>
+    </wsdl:types>
+
+
+    <wsdl:message name="getEgeResultsIn">
+        <wsdl:part element="tns:EGEResultsRequest" name="EgeResultsRequest" />
+    </wsdl:message>
+
+    <wsdl:message name="DictionaryContentIn">
+        <wsdl:part element="tns:DictionaryContentRequest" name="DictionaryContentRequest" />
+    </wsdl:message>
+
+    <wsdl:message name="DictionaryContentOut">
+        <wsdl:part element="tns:DictionaryContent" name="DictionaryContent" />
+    </wsdl:message>
+
+    <wsdl:message name="getEgeResultsOut">
+        <wsdl:part element="tns:EGEResultsResponse" name="EgeResultsResponse" />
+    </wsdl:message>
+
+    <wsdl:message name="RegisterAppealIn">
+        <wsdl:part element="tns:AppealRequest" name="AppealRequest" />
+    </wsdl:message>
+
+    <wsdl:message name="RegisterAppealOut">
+        <wsdl:part element="tns:AppealResponse" name="AppealResponse" />
+    </wsdl:message>
+
+    <wsdl:message name="BiException">
+        <wsdl:part name="parameters" element="exceptions:BiException" />
+    </wsdl:message>
+
+    <wsdl:portType name="eventServicePort">
+
+        <wsdl:operation name="getEGEResults">
+            <wsdl:input message="tns:getEgeResultsIn"/>
+            <wsdl:output message="tns:getEgeResultsOut"/>
+            <wsdl:fault name="BiException" message="tns:BiException"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="RegisterAppeal">
+            <wsdl:input message="tns:RegisterAppealIn"/>
+            <wsdl:output message="tns:RegisterAppealOut"/>
+            <wsdl:fault name="BiException" message="tns:BiException"/>
+        </wsdl:operation>
+        <wsdl:operation name="getDictionaryContent">
+            <wsdl:input message="tns:DictionaryContentIn"/>
+            <wsdl:output message="tns:DictionaryContentOut"/>
+            <wsdl:fault name="BiException" message="tns:BiException"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="eventServicePortBinding" type="tns:eventServicePort">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <wsdl:operation name="getEGEResults">
+            <soap:operation soapAction="urn://nahodka.ru/services/eventService/GetEgeResults" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BiException">
+                <soap:fault name="BiException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="getDictionaryContent">
+            <soap:operation soapAction="urn://nahodka.ru/services/eventService/getDictionaryContent" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BiException">
+                <soap:fault name="BiException" use="literal" encodingStyle="UTF-8"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="RegisterAppeal">
+            <soap:operation soapAction="urn://nahodka.ru/services/eventService/RegisterAppeal" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BiException">
+                <soap:fault name="BiException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="EventService">
+        <wsdl:port binding="tns:eventServicePortBinding" name="eventServicePort">
+            <soap:address location="http://localhost:8080/services/eventService/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

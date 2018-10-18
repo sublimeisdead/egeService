@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <xs:schema targetNamespace="urn://nahodka.ru/services/common/schemas/EGEResultsResponse"
+        attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:complexType name="EgeResultsResponseType">
+            <xs:annotation>
+               <xs:documentation> Ответ на запрос о результатах ЕГЭ </xs:documentation>
+            </xs:annotation>
+            <xs:sequence>
+                <xs:element name="EgeResult" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Subject">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Id" type="xs:string" />
+                                        <xs:element name="Name" type="xs:string" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="Total" type="xs:string" />
+                            <xs:element name="Grade" type="xs:string" />
+                            <xs:element name="PartA">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Mask" type="xs:string" />
+                                        <xs:element name="TasksDone" type="xs:string" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PartB">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Mask" type="xs:string" />
+                                        <xs:element name="TasksDone" type="xs:string" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PartC">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Mask" type="xs:string" />
+                                        <xs:element name="TasksDone" type="xs:string" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PartD">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Mask" type="xs:string" />
+                                        <xs:element name="TasksDone" type="xs:string" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="TasksDone" type="xs:string" />
+                            <xs:element name="PersentageTasks" type="xs:string" />
+                            <xs:element name="CodePPE">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Id" type="xs:string" />
+                                        <xs:element name="Name" type="xs:string" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="CodeOY">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Id" type="xs:string" />
+                                        <xs:element name="Name" type="xs:string" />
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="BlankNumber" type="xs:string" />
+                            <xs:element name="Blank1" type="xs:string" />
+                            <xs:element name="Blank2" type="xs:string" />
+                            <xs:element name="MinMark" type="xs:string" />
+                            <xs:element name="DateExam" type="xs:string" />
+                            <xs:element name="DatePublish" type="xs:string" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+
+    </xs:complexType>
+</xs:schema>

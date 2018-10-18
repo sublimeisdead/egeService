@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+        elementFormDefault="qualified"
+        xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn://nahodka.ru/services/eventService/schemas"
+        xmlns:egereq="urn://nahodka.ru/services/common/schemas/EGEResultsRequest"
+        xmlns:egeresp="urn://nahodka.ru/services/common/schemas/EGEResultsResponse"
+        xmlns:appeal="urn://nahodka.ru/services/common/schemas/AppealRequest"
+        xmlns:dictReq="urn://nahodka.ru/services/common/schemas/DictionaryContentRequest"
+        xmlns:dictResp="urn://nahodka.ru/services/common/schemas/DictionaryContent"
+        >
+
+    <import namespace="urn://nahodka.ru/services/common/schemas/types"
+            schemaLocation="../common/types.xsd"/>
+
+    <import namespace="urn://nahodka.ru/services/common/schemas/exceptions"
+            schemaLocation="../common/exceptions.xsd"/>
+
+    <import namespace="urn://nahodka.ru/services/common/schemas/EGEResultsRequest"
+            schemaLocation="../common/EGEResultsRequest.xsd"/>
+
+    <import namespace="urn://nahodka.ru/services/common/schemas/EGEResultsResponse"
+            schemaLocation="../common/EGEResultsResponse.xsd"/>
+
+    <import namespace="urn://nahodka.ru/services/common/schemas/AppealRequest"
+            schemaLocation="../common/AppealRequest.xsd"/>
+
+    <import namespace="urn://nahodka.ru/services/common/schemas/DictionaryContentRequest"
+            schemaLocation="../common/DictionaryContentRequest.xsd"/>
+
+    <import namespace="urn://nahodka.ru/services/common/schemas/DictionaryContent"
+            schemaLocation="../common/DictionaryContent.xsd"/>
+
+
+    <element name="EGEResultsRequest" type="egereq:EgeResultsRequestType">
+        <annotation>
+            <documentation>
+                Запрос на получение результатов ЕГЭ
+            </documentation>
+        </annotation>
+    </element>
+
+    <element name="EGEResultsResponse" type="egeresp:EgeResultsResponseType">
+        <annotation>
+            <documentation>
+                Результат ЕГЭ
+            </documentation>
+        </annotation>
+    </element>
+
+    <element name="AppealRequest" type="appeal:AppealRequestType">
+        <annotation>
+            <documentation>
+                Заявление на апелляцию
+            </documentation>
+        </annotation>
+    </element>
+
+    <element name="AppealResponse" >
+        <annotation>
+            <documentation>
+                Ответ на заявление об апелляции
+            </documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="Message" type="string" minOccurs="1" nillable="false">
+                    <annotation>
+                        <documentation>
+                            Сообщение о результате
+                        </documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="DictionaryContentRequest" type="dictReq:DictionaryContentRequestType">
+        <annotation>
+            <documentation>
+                Запрос на получение содержания справочников
+            </documentation>
+        </annotation>
+
+    </element>
+
+    <element name="DictionaryContent" type="dictResp:DictionaryContentType">
+        <annotation>
+            <documentation>
+                Содержание справочников
+            </documentation>
+        </annotation>
+    </element>
+
+</schema>
