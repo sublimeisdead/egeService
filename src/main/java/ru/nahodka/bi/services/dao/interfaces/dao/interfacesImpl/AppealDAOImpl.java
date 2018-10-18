@@ -32,4 +32,18 @@ public class AppealDAOImpl implements AppealDAO {
     public Serializable saveAppealRequest(Appeal appealRequest) {
         return sessionFactory.getCurrentSession().save(appealRequest);
     }
+
+    @Override
+    public Appeal findAppealByIdApplication(String idApplication) {
+        return (Appeal)sessionFactory.getCurrentSession().createQuery("select  a from Appeal a  where a.idApplication = :idApplication").
+                setParameter("idApplication", idApplication).uniqueResult();
+    }
+
+    @Override
+    public Appeal updateAppeal(Appeal appeal) {
+        sessionFactory.getCurrentSession().saveOrUpdate(appeal);
+        return appeal;
+    }
+
+
 }

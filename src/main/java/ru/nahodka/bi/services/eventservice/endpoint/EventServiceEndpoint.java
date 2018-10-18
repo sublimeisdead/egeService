@@ -3,9 +3,7 @@ package ru.nahodka.bi.services.eventservice.endpoint;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import ru.nahodka.bi.services.dao.interfaces.*;
-import ru.nahodka.bi.services.model.EgeRequest;
-import ru.nahodka.bi.services.model.EgeResult;
-import ru.nahodka.bi.services.model.Subject;
+import ru.nahodka.bi.services.model.*;
 import ru.nahodka.bi.services.model.dictionaries.*;
 import ru.nahodka.services.common.schemas.appealrequest.AppealRequestType;
 import ru.nahodka.services.common.schemas.dictionarycontent.DictionaryContentType;
@@ -13,9 +11,7 @@ import ru.nahodka.services.common.schemas.dictionarycontent.DictionaryContentTyp
 import ru.nahodka.services.common.schemas.dictionarycontentrequest.DictionaryContentRequestType;
 import ru.nahodka.services.common.schemas.egeresultsrequest.EgeResultsRequestType;
 import ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType;
-import ru.nahodka.services.eventservice.schemas.AppealResponse;
-import ru.nahodka.services.eventservice.schemas.BiException;
-import ru.nahodka.services.eventservice.schemas.EventServicePort;
+import ru.nahodka.services.schemas.*;
 
 import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
@@ -72,6 +68,9 @@ public class EventServiceEndpoint implements EventServicePort {
 
     @Resource
     private SubjectDAO subjectDAO;
+
+    @Resource
+    private AppealRequestStateDAO appealRequestStateDAO;
 
 
     @Override
@@ -275,7 +274,7 @@ public class EventServiceEndpoint implements EventServicePort {
      //   appealToDB.setCurrentState(soapAppealRequest.getCurrentState().intValue());
      //   appealToDB.setStateTransferred(soapAppealRequest.isStateTransferred());
         appealToDB.setApplicantMobilePhone(soapAppealRequest.getAppeal().getPhone());
-
+        appealToDB.setCurrentState(1);
         AppealResponse response=new AppealResponse();
         response.setMessage("Заявление на апелляцию успешно сохранено");
 
@@ -537,6 +536,26 @@ public class EventServiceEndpoint implements EventServicePort {
         return e;
     }
 
+    @Override
+    public AppealCancelResponse cancelAppeal(AppealCancelRequest appealCancelRequest) throws BiException {
+
+        Appeal appealFromDB = appealDAO.findAppealByIdApplication(appealCancelRequest.getIdApplication());
+
+        AppealRequestState appealRequestStateToDB=new AppealRequestState();
+        appealRequestStateToDB.setRequestId(Math.toIntExact(appealFromDB.getId()));
+        appealRequestStateToDB.setStateId(6);
+        appealRequestStateToDB.setComment("Запрос на отмену апелляции с ЕПГУ");
+        appealRequestStateToDB.setPrevStateId(appealFromDB.getCurrentState());
+        appealRequestStateToDB.setSetAt(new Timestamp(System.currentTimeMillis()));
+        appealFromDB.setCurrentState(6);
+        appealDAO.updateAppeal(appealFromDB);
+        appealRequestStateDAO.saveAppealRequestState(appealRequestStateToDB);
+
+
+        AppealCancelResponse appealCancelResponse=new AppealCancelResponse();
+        appealCancelResponse.setMessage("Заявление на отмену апелляции принято");
+        return appealCancelResponse;
+    }
 
 
     @Override

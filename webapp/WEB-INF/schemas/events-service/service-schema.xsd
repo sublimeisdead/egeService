@@ -2,7 +2,7 @@
 <schema
         elementFormDefault="qualified"
         xmlns="http://www.w3.org/2001/XMLSchema"
-        targetNamespace="urn://nahodka.ru/services/eventService/schemas"
+        targetNamespace="urn://nahodka.ru/services/schemas"
         xmlns:egereq="urn://nahodka.ru/services/common/schemas/EGEResultsRequest"
         xmlns:egeresp="urn://nahodka.ru/services/common/schemas/EGEResultsResponse"
         xmlns:appeal="urn://nahodka.ru/services/common/schemas/AppealRequest"
@@ -91,5 +91,45 @@
             </documentation>
         </annotation>
     </element>
+
+    <element name="AppealCancelRequest">
+        <annotation>
+            <documentation>
+                Запрос на отмену запроса на апелляцию
+            </documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="IdApplication" type="string" minOccurs="1" nillable="false">
+                    <annotation>
+                        <documentation>
+                            Ид запроса на апелляцию ЕПГУ
+                        </documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="AppealCancelResponse">
+        <annotation>
+            <documentation>
+                Ответ на запрос на отмену запроса на апелляцию
+            </documentation>
+        </annotation>
+        <complexType>
+            <sequence>
+                <element name="Message" type="string" minOccurs="1" nillable="false">
+                    <annotation>
+                        <documentation>
+                            Заявление на отмену апелляции принято
+                        </documentation>
+                    </annotation>
+                </element>
+            </sequence>
+        </complexType>
+    </element>
+
+
 
 </schema>

@@ -1,11 +1,11 @@
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-                  xmlns:tns="urn://nahodka.ru/services/eventService/schemas"
+                  xmlns:tns="urn://nahodka.ru/services/schemas"
                   xmlns:exceptions="urn://nahodka.ru/services/common/schemas/exceptions"
-                  targetNamespace="urn://nahodka.ru/services/eventService/schemas">
+                  targetNamespace="urn://nahodka.ru/services/schemas">
     <wsdl:types>
         <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                    targetNamespace="urn://nahodka.ru/services/eventService/schemas">
+                    targetNamespace="urn://nahodka.ru/services/schemas">
             <xsd:include schemaLocation="../schemas/events-service/service-schema.xsd"/>
         </xsd:schema>
     </wsdl:types>
@@ -35,6 +35,16 @@
         <wsdl:part element="tns:AppealResponse" name="AppealResponse" />
     </wsdl:message>
 
+    <wsdl:message name="CancelAppealIn">
+        <wsdl:part element="tns:AppealCancelRequest" name="AppealCancelRequest" />
+    </wsdl:message>
+
+    <wsdl:message name="CancelAppealOut">
+        <wsdl:part element="tns:AppealCancelResponse" name="AppealCancelResponse" />
+    </wsdl:message>
+
+
+
     <wsdl:message name="BiException">
         <wsdl:part name="parameters" element="exceptions:BiException" />
     </wsdl:message>
@@ -57,6 +67,11 @@
             <wsdl:output message="tns:DictionaryContentOut"/>
             <wsdl:fault name="BiException" message="tns:BiException"/>
         </wsdl:operation>
+        <wsdl:operation name="cancelAppeal">
+            <wsdl:input message="tns:CancelAppealIn"/>
+            <wsdl:output message="tns:CancelAppealOut"/>
+            <wsdl:fault name="BiException" message="tns:BiException"/>
+        </wsdl:operation>
     </wsdl:portType>
 
     <wsdl:binding name="eventServicePortBinding" type="tns:eventServicePort">
@@ -64,6 +79,19 @@
 
         <wsdl:operation name="getEGEResults">
             <soap:operation soapAction="urn://nahodka.ru/services/eventService/GetEgeResults" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="BiException">
+                <soap:fault name="BiException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+
+        <wsdl:operation name="cancelAppeal">
+            <soap:operation soapAction="urn://nahodka.ru/services/eventService/cancelAppeal" style="document"/>
             <wsdl:input>
                 <soap:body use="literal"/>
             </wsdl:input>

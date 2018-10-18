@@ -2,7 +2,7 @@ package ru.nahodka.bi.services.eventservice.error;
 
 
 import ru.nahodka.services.common.schemas.exceptions.ErrorCode;
-import ru.nahodka.services.eventservice.schemas.BiException;
+import ru.nahodka.services.schemas.BiException;
 
 import static java.text.MessageFormat.format;
 

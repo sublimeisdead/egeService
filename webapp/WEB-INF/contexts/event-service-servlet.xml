@@ -171,6 +171,10 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
+    <bean id="appealRequestStateDAO" class="ru.nahodka.bi.services.dao.interfaces.dao.interfacesImpl.AppealRequestStateDAOImpl">
+        <property name="sessionFactory" ref="sessionFactory2"/>
+    </bean>
+
 
 
 
