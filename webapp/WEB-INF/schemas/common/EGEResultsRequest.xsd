@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema     targetNamespace="urn://nahodka.ru/services/common/schemas/EGEResultsRequest"
+<xs:schema     targetNamespace="urn://nahodka.ru/services/common/schemas/EGEResultsRequest/1.0.0"
                 attributeFormDefault="unqualified" elementFormDefault="qualified"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
-               xmlns:typ="urn://nahodka.ru/services/common/schemas/types"
                >
-    <xs:import schemaLocation="types.xsd"
-            namespace="urn://nahodka.ru/services/common/schemas/types"/>
     <xs:complexType name="EgeResultsRequestType">
             <xs:sequence>
                 <xs:element name="EgeResultRequest" >
@@ -143,42 +140,42 @@
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="MobilePhone" type="xs:string"/>
-                            <xs:element name="ApplicantEqualsExaminee" type="xs:boolean" default="false"/>
-                      <!--      <xs:element name="LastName_gr">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:string">
-                                        <xs:maxLength value="255"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:element>
-                            <xs:element name="FirstName_gr">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:string">
-                                        <xs:maxLength value="255"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:element>
-                            <xs:element name="ExamineePatronymic">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:string">
-                                        <xs:maxLength value="255"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:element>
-                            <xs:element name="ExamineePassportSeries">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:string">
-                                        <xs:maxLength value="255"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:element>
-                            <xs:element name="ExamineePassportNumber">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:string">
-                                        <xs:maxLength value="255"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:element> -->
+                            <!--   <xs:element name="ApplicantEqualsExaminee" type="xs:boolean" default="false"/>
+                               <xs:element name="LastName_gr">
+                                   <xs:simpleType>
+                                       <xs:restriction base="xs:string">
+                                           <xs:maxLength value="255"/>
+                                       </xs:restriction>
+                                   </xs:simpleType>
+                               </xs:element>
+                               <xs:element name="FirstName_gr">
+                                   <xs:simpleType>
+                                       <xs:restriction base="xs:string">
+                                           <xs:maxLength value="255"/>
+                                       </xs:restriction>
+                                   </xs:simpleType>
+                               </xs:element>
+                               <xs:element name="ExamineePatronymic">
+                                   <xs:simpleType>
+                                       <xs:restriction base="xs:string">
+                                           <xs:maxLength value="255"/>
+                                       </xs:restriction>
+                                   </xs:simpleType>
+                               </xs:element>
+                               <xs:element name="ExamineePassportSeries">
+                                   <xs:simpleType>
+                                       <xs:restriction base="xs:string">
+                                           <xs:maxLength value="255"/>
+                                       </xs:restriction>
+                                   </xs:simpleType>
+                               </xs:element>
+                               <xs:element name="ExamineePassportNumber">
+                                   <xs:simpleType>
+                                       <xs:restriction base="xs:string">
+                                           <xs:maxLength value="255"/>
+                                       </xs:restriction>
+                                   </xs:simpleType>
+                               </xs:element> -->
                             <xs:element name="YearExam">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:short">

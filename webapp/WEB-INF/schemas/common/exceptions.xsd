@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema targetNamespace="urn://nahodka.ru/services/common/schemas/exceptions"
+<schema targetNamespace="urn://nahodka.ru/services/common/schemas/exceptions/1.0.0"
         elementFormDefault="qualified"
         xmlns="http://www.w3.org/2001/XMLSchema"
-        xmlns:tns="urn://nahodka.ru/services/common/schemas/exceptions">
+        xmlns:tns="urn://nahodka.ru/services/common/schemas/exceptions/1.0.0">
 
     <simpleType name="ErrorCode">
         <annotation>
@@ -24,9 +24,24 @@
                     <documentation>Отсутствует, либо пуст обязательный элемент Dimensions </documentation>
                 </annotation>
             </enumeration>
+            <enumeration value="WRONG_REGION_EXCEPTION">
+                <annotation>
+                    <documentation>Недопустимое значение региона</documentation>
+                </annotation>
+            </enumeration>
             <enumeration value="EMPTY_APPEAL_REQUEST_EXCEPTION">
                 <annotation>
                     <documentation>Отсутствует запрос на апелляцию APPEAL REQUEST </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="EMPTY_APPEAL_CANCEL_REQUEST_EXCEPTION">
+                <annotation>
+                    <documentation>Отсутствует запрос на отмену апелляции APPEAL CANCEL REQUEST </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="NOT_FOUND">
+                <annotation>
+                    <documentation>Результат не найден</documentation>
                 </annotation>
             </enumeration>
             <enumeration value="EMPTY_SERVICE_CODE_EXCEPTION">

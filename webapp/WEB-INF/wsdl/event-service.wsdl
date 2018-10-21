@@ -1,11 +1,11 @@
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-                  xmlns:tns="urn://nahodka.ru/services/schemas"
-                  xmlns:exceptions="urn://nahodka.ru/services/common/schemas/exceptions"
-                  targetNamespace="urn://nahodka.ru/services/schemas">
+                  xmlns:tns="urn://nahodka.ru/services/schemas/1.0.0"
+                  xmlns:exceptions="urn://nahodka.ru/services/common/schemas/exceptions/1.0.0"
+                  targetNamespace="urn://nahodka.ru/services/schemas/1.0.0">
     <wsdl:types>
         <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                    targetNamespace="urn://nahodka.ru/services/schemas">
+                    targetNamespace="urn://nahodka.ru/services/schemas/1.0.0">
             <xsd:include schemaLocation="../schemas/events-service/service-schema.xsd"/>
         </xsd:schema>
     </wsdl:types>

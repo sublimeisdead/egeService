@@ -1,16 +1,16 @@
 package ru.nahodka.bi.services.eventservice.error;
 
 
-import ru.nahodka.services.common.schemas.exceptions.ErrorCode;
-import ru.nahodka.services.schemas.BiException;
+import ru.nahodka.services.common.schemas.exceptions._1_0.ErrorCode;
+import ru.nahodka.services.schemas._1_0.BiException;
 
 import static java.text.MessageFormat.format;
 
 public class Error {
 
     private static BiException generateException(ErrorCode errorCode, String message, String details) {
-        ru.nahodka.services.common.schemas.exceptions.BiException faultInfo =
-                new ru.nahodka.services.common.schemas.exceptions.BiException();
+        ru.nahodka.services.common.schemas.exceptions._1_0.BiException faultInfo =
+                new ru.nahodka.services.common.schemas.exceptions._1_0.BiException();
         faultInfo.setDetails(details);
         faultInfo.setErrorCode(errorCode);
         return new BiException(message, faultInfo);
@@ -37,6 +37,18 @@ public class Error {
 
         String message = "Запрос на результат ЕГЭ пуст";
         return generateException(ErrorCode.EMPTY_EGE_REQUEST, message);
+    }
+
+    public static BiException emptyAppealCancelRequest() {
+
+        String message = "Запрос на отмену апелляции пуст";
+        return generateException(ErrorCode.EMPTY_APPEAL_CANCEL_REQUEST_EXCEPTION, message);
+    }
+
+    public static BiException notFound() {
+
+        String message = "Результат не найден";
+        return generateException(ErrorCode.NOT_FOUND, message);
     }
 
     public static BiException emptyServiceCodeException() {
@@ -163,6 +175,12 @@ public class Error {
 
         String message = "Отсутствует, либо пуст обязательный элемент CodeSubject";
         return generateException(ErrorCode.EMPTY_CODE_SUBJECT_EXCEPTION, message);
+    }
+
+    public static BiException wrongRegionCodeException() {
+
+        String message = "Недопустимое значение кода региона";
+        return generateException(ErrorCode.WRONG_REGION_EXCEPTION, message);
     }
 
     public static BiException emptySubjectTextException() {

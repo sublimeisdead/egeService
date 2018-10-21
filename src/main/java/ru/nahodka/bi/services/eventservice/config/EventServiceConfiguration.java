@@ -7,8 +7,8 @@ import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.nahodka.bi.services.eventservice.endpoint.EventServiceEndpoint;
-import ru.nahodka.services.schemas.EventService;
-import ru.nahodka.services.schemas.EventServicePort;
+import ru.nahodka.services.schemas._1_0.EventService;
+import ru.nahodka.services.schemas._1_0.EventServicePort;
 
 import javax.xml.ws.Endpoint;
 

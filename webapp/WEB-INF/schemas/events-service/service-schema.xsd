@@ -2,33 +2,33 @@
 <schema
         elementFormDefault="qualified"
         xmlns="http://www.w3.org/2001/XMLSchema"
-        targetNamespace="urn://nahodka.ru/services/schemas"
-        xmlns:egereq="urn://nahodka.ru/services/common/schemas/EGEResultsRequest"
-        xmlns:egeresp="urn://nahodka.ru/services/common/schemas/EGEResultsResponse"
-        xmlns:appeal="urn://nahodka.ru/services/common/schemas/AppealRequest"
-        xmlns:dictReq="urn://nahodka.ru/services/common/schemas/DictionaryContentRequest"
-        xmlns:dictResp="urn://nahodka.ru/services/common/schemas/DictionaryContent"
+        targetNamespace="urn://nahodka.ru/services/schemas/1.0.0"
+        xmlns:egereq="urn://nahodka.ru/services/common/schemas/EGEResultsRequest/1.0.0"
+        xmlns:egeresp="urn://nahodka.ru/services/common/schemas/EGEResultsResponse/1.0.0"
+        xmlns:appeal="urn://nahodka.ru/services/common/schemas/AppealRequest/1.0.0"
+        xmlns:dictReq="urn://nahodka.ru/services/common/schemas/DictionaryContentRequest/1.0.0"
+        xmlns:dictResp="urn://nahodka.ru/services/common/schemas/DictionaryContent/1.0.0"
         >
 
-    <import namespace="urn://nahodka.ru/services/common/schemas/types"
-            schemaLocation="../common/types.xsd"/>
+  <!--  <import namespace="urn://nahodka.ru/services/common/schemas/types/1.0.0"
+            schemaLocation="../common/types.xsd"/> -->
 
-    <import namespace="urn://nahodka.ru/services/common/schemas/exceptions"
+    <import namespace="urn://nahodka.ru/services/common/schemas/exceptions/1.0.0"
             schemaLocation="../common/exceptions.xsd"/>
 
-    <import namespace="urn://nahodka.ru/services/common/schemas/EGEResultsRequest"
+    <import namespace="urn://nahodka.ru/services/common/schemas/EGEResultsRequest/1.0.0"
             schemaLocation="../common/EGEResultsRequest.xsd"/>
 
-    <import namespace="urn://nahodka.ru/services/common/schemas/EGEResultsResponse"
+    <import namespace="urn://nahodka.ru/services/common/schemas/EGEResultsResponse/1.0.0"
             schemaLocation="../common/EGEResultsResponse.xsd"/>
 
-    <import namespace="urn://nahodka.ru/services/common/schemas/AppealRequest"
+    <import namespace="urn://nahodka.ru/services/common/schemas/AppealRequest/1.0.0"
             schemaLocation="../common/AppealRequest.xsd"/>
 
-    <import namespace="urn://nahodka.ru/services/common/schemas/DictionaryContentRequest"
+    <import namespace="urn://nahodka.ru/services/common/schemas/DictionaryContentRequest/1.0.0"
             schemaLocation="../common/DictionaryContentRequest.xsd"/>
 
-    <import namespace="urn://nahodka.ru/services/common/schemas/DictionaryContent"
+    <import namespace="urn://nahodka.ru/services/common/schemas/DictionaryContent/1.0.0"
             schemaLocation="../common/DictionaryContent.xsd"/>
 
 

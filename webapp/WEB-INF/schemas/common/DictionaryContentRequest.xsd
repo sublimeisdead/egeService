@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="urn://nahodka.ru/services/common/schemas/DictionaryContentRequest">
+           targetNamespace="urn://nahodka.ru/services/common/schemas/DictionaryContentRequest/1.0.0">
     <xs:complexType name="DictionaryContentRequestType">
         <xs:sequence>
         <xs:element name="Dictionary" >

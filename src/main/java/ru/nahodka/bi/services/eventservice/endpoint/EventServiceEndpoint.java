@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 import ru.nahodka.bi.services.dao.interfaces.*;
 import ru.nahodka.bi.services.model.*;
 import ru.nahodka.bi.services.model.dictionaries.*;
-import ru.nahodka.services.common.schemas.appealrequest.AppealRequestType;
-import ru.nahodka.services.common.schemas.dictionarycontent.DictionaryContentType;
-import ru.nahodka.services.common.schemas.dictionarycontent.DictionaryContentType.Dictionary.Records;
-import ru.nahodka.services.common.schemas.dictionarycontentrequest.DictionaryContentRequestType;
-import ru.nahodka.services.common.schemas.egeresultsrequest.EgeResultsRequestType;
-import ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType;
-import ru.nahodka.services.schemas.*;
+import ru.nahodka.services.common.schemas.appealrequest._1_0.AppealRequestType;
+import ru.nahodka.services.common.schemas.dictionarycontent._1_0.DictionaryContentType;
+import ru.nahodka.services.common.schemas.dictionarycontent._1_0.DictionaryContentType.Dictionary.Records;
+import ru.nahodka.services.common.schemas.dictionarycontentrequest._1_0.DictionaryContentRequestType;
+import ru.nahodka.services.common.schemas.egeresultsrequest._1_0.EgeResultsRequestType;
+import ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType;
+import ru.nahodka.services.schemas._1_0.*;
 
 import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
@@ -106,12 +106,12 @@ public class EventServiceEndpoint implements EventServicePort {
 
         appealToDB.setReqId(UUID.randomUUID());
 
-        if(soapAppealRequest.getAppeal().getDateApplication()==null){
+        if(soapAppealRequest.getAppeal().getDateApplication()==null || String.valueOf(soapAppealRequest.getAppeal().getDateApplication()).equals("1900-01-01")){
             throw emptyDateApplicationException();
         }else{
             appealToDB.setDateApplication(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapAppealRequest.getAppeal().getDateApplication()));
         }
-        if(Short.valueOf(soapAppealRequest.getAppeal().getAppType())==null){
+        if(Short.valueOf(soapAppealRequest.getAppeal().getAppType())==-2){
             throw emptyAppTypeException();
         }else{
             appealToDB.setAppType(soapAppealRequest.getAppeal().getAppType());
@@ -181,13 +181,13 @@ public class EventServiceEndpoint implements EventServicePort {
 
         appealToDB.setEmailAddress(soapAppealRequest.getAppeal().getEmailAddress());
 
-            if(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDateGr()==null){
+            if(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDateGr()==null || String.valueOf(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDateGr()).equals("1900-01-01")){
             throw emptyPassportDateException();
             }else{
                 appealToDB.setExamineePasDate(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDateGr()));
             }
 
-            if(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDate()==null) {
+            if(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDate()==null || String.valueOf(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDate()).equals("1900-01-01") ) {
                 throw emptyApplicantPassportDateException();
             }else {
                 appealToDB.setApplicantPasDate(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDate()));
@@ -206,9 +206,13 @@ public class EventServiceEndpoint implements EventServicePort {
             }
 
 
+        if(soapAppealRequest.getAppeal().getRegion()!=43){
+                throw wrongRegionCodeException();
+        }else {
+            appealToDB.setRegion(soapAppealRequest.getAppeal().getRegion());
+        }
 
-        appealToDB.setRegion(soapAppealRequest.getAppeal().getRegion());
-            if(soapAppealRequest.getAppeal().getCodSub()==0){
+            if(soapAppealRequest.getAppeal().getCodSub()==-2){
                 throw emptyCodeSubjectException();
             }else{
                 appealToDB.setSubject((soapAppealRequest.getAppeal().getCodSub()));
@@ -220,13 +224,13 @@ public class EventServiceEndpoint implements EventServicePort {
             appealToDB.setSubjectText(soapAppealRequest.getAppeal().getEduSub());
         }
 
-        if(soapAppealRequest.getAppeal().getDateExam()==null){
+        if(soapAppealRequest.getAppeal().getDateExam()==null ||String.valueOf(soapAppealRequest.getAppeal().getDateExam()).equals("1900-01-01") ){
                 throw emptyExamDateException();
         }else{
             appealToDB.setDateExam(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapAppealRequest.getAppeal().getDateExam()));
         }
 
-        if(soapAppealRequest.getAppeal().getCodeSchool()==0){
+        if(soapAppealRequest.getAppeal().getCodeSchool()==-2){
                 throw emptyCodeSchoolException();
         }else{
             appealToDB.setEduOrganization(soapAppealRequest.getAppeal().getCodeSchool());
@@ -238,7 +242,7 @@ public class EventServiceEndpoint implements EventServicePort {
             appealToDB.setEduOrganizationText(soapAppealRequest.getAppeal().getSchool());
         }
 
-        if(soapAppealRequest.getAppeal().getCodePlaceExam()==0){
+        if(soapAppealRequest.getAppeal().getCodePlaceExam()==-2){
             throw emptyCodePlaceExamException();
         }else {
             appealToDB.setExaminationPoint(soapAppealRequest.getAppeal().getCodePlaceExam());
@@ -250,7 +254,7 @@ public class EventServiceEndpoint implements EventServicePort {
             appealToDB.setExaminationPointText(soapAppealRequest.getAppeal().getPlaceExam());
         }
 
-        if(soapAppealRequest.getAppeal().getApRev()==0){
+        if(soapAppealRequest.getAppeal().getApRev()==-2){
             throw emptyPresenceException();
         }else {
             appealToDB.setPresence(soapAppealRequest.getAppeal().getApRev());
@@ -262,7 +266,7 @@ public class EventServiceEndpoint implements EventServicePort {
                 appealToDB.setPresenceText(soapAppealRequest.getAppeal().getApRevText());
         }
         appealToDB.setRequestedAt(new Timestamp(System.currentTimeMillis()));
-        appealToDB.setApplicantEqualsExaminee(soapAppealRequest.getAppeal().isApplicantEqualsExaminee());
+      //  appealToDB.setApplicantEqualsExaminee(soapAppealRequest.getAppeal().isApplicantEqualsExaminee());
         appealToDB.setYear(soapAppealRequest.getAppeal().getDateExam().getYear());
      //   appealToDB.setResponsedAt(new Timestamp(new Date()));
      //   appealToDB.setRegisteredAt();
@@ -342,7 +346,7 @@ public class EventServiceEndpoint implements EventServicePort {
         }
 
 
-        egeRequestToDB.setApplicantEqualsExaminee(soapEgeRequest.isApplicantEqualsExaminee());
+      //  egeRequestToDB.setApplicantEqualsExaminee(soapEgeRequest.isApplicantEqualsExaminee());
 
         egeRequestToDB.setApplicantPatronymic(soapEgeRequest.getApplicantPatronymic().getSecondName());
         egeRequestToDB.setExamineePatronymic(soapEgeRequest.getApplicantPatronymic().getSecondNameGr());
@@ -466,9 +470,9 @@ public class EventServiceEndpoint implements EventServicePort {
 
        EgeResult freshestEgeResult=getFreshestResult(egeResults);
 
-        ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType.EgeResult egeResult=new ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType.EgeResult();
+        ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType.EgeResult egeResult=new ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType.EgeResult();
 
-        ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType.EgeResult.Subject egeResultSubject=new ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType.EgeResult.Subject();
+        ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType.EgeResult.Subject egeResultSubject=new ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType.EgeResult.Subject();
         egeResultSubject.setId(String.valueOf(soapEgeRequest.getCodeSubject()));
         egeResultSubject.setName(freshestEgeResult.getSbj().getName());
         egeResult.setSubject(egeResultSubject);
@@ -477,22 +481,22 @@ public class EventServiceEndpoint implements EventServicePort {
         egeResult.setTotal(freshestEgeResult.getTotal());
         egeResult.setGrade(freshestEgeResult.getGrade());
 
-        ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType.EgeResult.PartA egeResultPartA=new EgeResultsResponseType.EgeResult.PartA();
+        ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType.EgeResult.PartA egeResultPartA=new EgeResultsResponseType.EgeResult.PartA();
         egeResultPartA.setMask(freshestEgeResult.getMaskA());
         egeResultPartA.setTasksDone(freshestEgeResult.getTasksDoneA());
         egeResult.setPartA(egeResultPartA);
 
-        ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType.EgeResult.PartB egeResultPartB=new EgeResultsResponseType.EgeResult.PartB();
+        ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType.EgeResult.PartB egeResultPartB=new EgeResultsResponseType.EgeResult.PartB();
         egeResultPartB.setMask(freshestEgeResult.getMaskB());
         egeResultPartB.setTasksDone(freshestEgeResult.getTasksDoneB());
         egeResult.setPartB(egeResultPartB);
 
-        ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType.EgeResult.PartC egeResultPartC=new EgeResultsResponseType.EgeResult.PartC();
+        ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType.EgeResult.PartC egeResultPartC=new EgeResultsResponseType.EgeResult.PartC();
         egeResultPartC.setMask(freshestEgeResult.getMaskC());
         egeResultPartC.setTasksDone(freshestEgeResult.getTasksDoneC());
         egeResult.setPartC(egeResultPartC);
 
-        ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType.EgeResult.PartD egeResultPartD=new EgeResultsResponseType.EgeResult.PartD();
+        ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType.EgeResult.PartD egeResultPartD=new EgeResultsResponseType.EgeResult.PartD();
         egeResultPartD.setMask(freshestEgeResult.getMaskD());
         egeResultPartD.setTasksDone(freshestEgeResult.getTasksDoneD());
         egeResult.setPartD(egeResultPartD);
@@ -500,19 +504,19 @@ public class EventServiceEndpoint implements EventServicePort {
         egeResult.setTasksDone(freshestEgeResult.getTasksDone());
         egeResult.setPersentageTasks(freshestEgeResult.getPercentageTasksDone());
 
-        ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType.EgeResult.CodeOY egeResultCodeOY=new EgeResultsResponseType.EgeResult.CodeOY();
+        ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType.EgeResult.CodeOY egeResultCodeOY=new EgeResultsResponseType.EgeResult.CodeOY();
         egeResultCodeOY.setId(freshestEgeResult.getCodeOy());
         egeResultCodeOY.setName(freshestEgeResult.getEduOrganization().getName());
         egeResult.setCodeOY(egeResultCodeOY);
 
-        ru.nahodka.services.common.schemas.egeresultsresponse.EgeResultsResponseType.EgeResult.CodePPE egeResultCodePPE=new EgeResultsResponseType.EgeResult.CodePPE();
+        ru.nahodka.services.common.schemas.egeresultsresponse._1_0.EgeResultsResponseType.EgeResult.CodePPE egeResultCodePPE=new EgeResultsResponseType.EgeResult.CodePPE();
         egeResultCodePPE.setId(freshestEgeResult.getCodePpe());
         egeResultCodePPE.setName(freshestEgeResult.getExaminationPoint().getName());
         egeResult.setCodePPE(egeResultCodePPE);
 
         egeResult.setBlankNumber(freshestEgeResult.getBlankNumber());
-        egeResult.setBlank1(freshestEgeResult.getBlank1());
-        egeResult.setBlank2(freshestEgeResult.getBlank2());
+        egeResult.setBlank1(/*freshestEgeResult.getBlank1()*/"PATH TO BLANK 1");
+        egeResult.setBlank2(/*freshestEgeResult.getBlank2()*/"PATH TO BLANK 2 ");
         egeResult.setMinMark(freshestEgeResult.getMinMark());
         egeResult.setDateExam(freshestEgeResult.getDate());
         egeResult.setDatePublish(freshestEgeResult.getDatePublish());
@@ -539,7 +543,14 @@ public class EventServiceEndpoint implements EventServicePort {
     @Override
     public AppealCancelResponse cancelAppeal(AppealCancelRequest appealCancelRequest) throws BiException {
 
+        if(appealCancelRequest==null){
+            throw emptyAppealCancelRequest();
+        }
+
         Appeal appealFromDB = appealDAO.findAppealByIdApplication(appealCancelRequest.getIdApplication());
+        if(appealFromDB==null){
+            throw notFound();
+        }
 
         AppealRequestState appealRequestStateToDB=new AppealRequestState();
         appealRequestStateToDB.setRequestId(Math.toIntExact(appealFromDB.getId()));
