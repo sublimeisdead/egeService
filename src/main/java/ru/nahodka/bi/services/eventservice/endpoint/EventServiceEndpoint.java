@@ -21,10 +21,7 @@ import java.io.StringWriter;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static ru.nahodka.bi.services.eventservice.error.Error.*;
 
@@ -321,7 +318,7 @@ public class EventServiceEndpoint implements EventServicePort {
             egeRequestToDB.setIdApplication(soapEgeRequest.getIdApplication());
         }
 
-        if(soapEgeRequest.getDateApplication()==null){
+        if(String.valueOf(soapEgeRequest.getDateApplication()).equals("1900-01-01")){
             throw emptyDateApplicationException();
         }else{
             egeRequestToDB.setDateApplication(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapEgeRequest.getDateApplication()));
@@ -329,7 +326,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
         egeRequestToDB.setReqId(UUID.randomUUID());
       //  egeRequestToDB.setDateApplication(soapEgeRequest.getDateApplication());
-        if(soapEgeRequest.getAppType()==0){
+        if(soapEgeRequest.getAppType()==-2){
             throw emptyAppTypeException();
         }else{
             egeRequestToDB.setAppType(soapEgeRequest.getAppType());
@@ -412,13 +409,13 @@ public class EventServiceEndpoint implements EventServicePort {
             egeRequestToDB.setExamineePasOrg(soapEgeRequest.getApplicantPasOrg().getPasOrgGr());
         }
 
-        if(soapEgeRequest.getApplicantPasDate().getPasDate()==null){
+        if(String.valueOf(soapEgeRequest.getApplicantPasDate().getPasDate()).equals("1900-01-01")){
             throw emptyApplicantPassportDateException();
         }else{
             egeRequestToDB.setApplicantPasDate(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapEgeRequest.getApplicantPasDate().getPasDate()));
         }
 
-        if(soapEgeRequest.getApplicantPasDate().getPasDateGr()==null){
+        if(String.valueOf(soapEgeRequest.getApplicantPasDate().getPasDateGr()).equals("1900-01-01")){
             throw emptyPassportDateException();
         }else{
             egeRequestToDB.setExamineePasDate(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapEgeRequest.getApplicantPasDate().getPasDateGr()));
@@ -437,14 +434,18 @@ public class EventServiceEndpoint implements EventServicePort {
 
       //  egeRequestToDB.setExamineePassportSeries(soapEgeRequest.getExamineePassportSeries());
       //  egeRequestToDB.setExamineePassportNumber(soapEgeRequest.getExamineePassportNumber());
+        Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
 
-        if(soapEgeRequest.getYearExam()==0){
+
+        if(soapEgeRequest.getYearExam()==3000||soapEgeRequest.getYearExam()<2012||soapEgeRequest.getYearExam()>calendar.get(Calendar.YEAR)){
             throw emptyYearExamException();
         }else {
             egeRequestToDB.setYearExam(soapEgeRequest.getYearExam());
         }
 
-        if(soapEgeRequest.getCodeSubject()==0){
+        if(soapEgeRequest.getCodeSubject()==-2){
             throw emptyCodeSubjectException();
         }else{
             egeRequestToDB.setCodeSubject(soapEgeRequest.getCodeSubject());
@@ -456,7 +457,7 @@ public class EventServiceEndpoint implements EventServicePort {
             egeRequestToDB.setSubjectText(soapEgeRequest.getSubjectText());
         }
 
-        egeRequestToDB.setRequestedAt(new Timestamp(System.currentTimeMillis()));
+        egeRequestToDB.setRequestedAt(timestamp);
        // egeRequestToDB.setResponse(soapEgeRequest.getResponse());
       // egeRequestDAO.saveEgeRequest(egeRequestToDB);
 

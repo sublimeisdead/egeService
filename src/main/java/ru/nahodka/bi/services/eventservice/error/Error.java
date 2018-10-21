@@ -167,7 +167,7 @@ public class Error {
 
     public static BiException emptyYearExamException() {
 
-        String message = "Отсутствует, либо пуст обязательный элемент YearExam";
+        String message = "Недопустимое значение элемента YearExam";
         return generateException(ErrorCode.EMPTY_YEAR_EXAM_EXCEPTION, message);
     }
 

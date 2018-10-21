@@ -12,8 +12,8 @@
                             <xs:element name="Service_FullName" type="xs:string"/>
                             <xs:element name="IdApplication" type="xs:string"/>
                          <!--   <xs:element name="ReqId" type="typ:uuid"/> -->
-                            <xs:element name="DateApplication" type="xs:date" nillable="true" />
-                            <xs:element name="app_type" type="xs:short"/>
+                            <xs:element name="DateApplication" type="xs:date" nillable="true" default="1900-01-01" />
+                            <xs:element name="app_type" type="xs:short" default="-2"/>
                          <!--   <xs:element name="ApplicantEsiaId" type="xs:string"/> -->
                             <xs:element name="SNILS" type="xs:string"/>
                             <xs:element name="ApplicantSurname">
@@ -126,8 +126,8 @@
                             <xs:element name="ApplicantPasDate">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="PasDate" type="xs:date" minOccurs="0" />
-                                        <xs:element name="PasDate_gr" type="xs:date" minOccurs="0" />
+                                        <xs:element name="PasDate" type="xs:date" minOccurs="0" default="1900-01-01"/>
+                                        <xs:element name="PasDate_gr" type="xs:date" minOccurs="0" default="1900-01-01" />
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
@@ -176,14 +176,14 @@
                                        </xs:restriction>
                                    </xs:simpleType>
                                </xs:element> -->
-                            <xs:element name="YearExam">
+                            <xs:element name="YearExam" default="3000">
                                 <xs:simpleType>
-                                    <xs:restriction base="xs:short">
-                                        <xs:minExclusive value="2000"/>
+                                    <xs:restriction base="xs:short"  >
+                                        <xs:minInclusive value="2000" />
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
-                            <xs:element name="CodeSubject" type="xs:short"/>
+                            <xs:element name="CodeSubject" type="xs:short" default="-2"/>
                             <xs:element name="SubjectText">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
