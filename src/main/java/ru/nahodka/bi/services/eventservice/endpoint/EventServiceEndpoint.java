@@ -573,6 +573,10 @@ public class EventServiceEndpoint implements EventServicePort {
     @Override
     public DictionaryContentType getDictionaryContent(DictionaryContentRequestType dictionaryContentRequest) throws BiException {
 
+        if(dictionaryContentRequest==null){
+            throw emptyDictionaryContentRequest();
+        }
+
         DictionaryContentType.Dictionary.Records records=new DictionaryContentType.Dictionary.Records();
      //   ru.nahodka.services.common.schemas.dictionarycontent.DictionaryContentType dictionaryContentObject=new ru.nahodka.services.common.schemas.dictionarycontent.DictionaryContentType();
         DictionaryContentType dictionaryContentSchema=new DictionaryContentType();

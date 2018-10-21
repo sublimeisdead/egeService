@@ -44,6 +44,11 @@
                     <documentation>Результат не найден</documentation>
                 </annotation>
             </enumeration>
+            <enumeration value="EMPTY_DICTIONARY_CONTENT_REQUEST">
+                <annotation>
+                    <documentation>Отсутствует, либо пуст обязательный элемент DICTIONARY_CONTENT_REQUEST</documentation>
+                </annotation>
+            </enumeration>
             <enumeration value="EMPTY_SERVICE_CODE_EXCEPTION">
                 <annotation>
                     <documentation>Отсутствует, либо пуст обязательный элемент SERVICE_CODE </documentation>

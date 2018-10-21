@@ -39,6 +39,12 @@ public class Error {
         return generateException(ErrorCode.EMPTY_EGE_REQUEST, message);
     }
 
+    public static BiException emptyDictionaryContentRequest() {
+
+        String message = "Запрос на содержание справочников пуст";
+        return generateException(ErrorCode.EMPTY_DICTIONARY_CONTENT_REQUEST, message); //
+    }
+
     public static BiException emptyAppealCancelRequest() {
 
         String message = "Запрос на отмену апелляции пуст";
