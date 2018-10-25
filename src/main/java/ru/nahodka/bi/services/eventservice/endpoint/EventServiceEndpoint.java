@@ -18,11 +18,14 @@ import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static ru.nahodka.bi.services.eventservice.error.Error.*;
 
@@ -522,11 +525,19 @@ public class EventServiceEndpoint implements EventServicePort {
         egeResult.setCodePPE(egeResultCodePPE);
 
         egeResult.setBlankNumber(freshestEgeResult.getBlankNumber());
-        egeResult.setBlank1(/*freshestEgeResult.getBlank1()*/"PATH TO BLANK 1");
-        egeResult.setBlank2(/*freshestEgeResult.getBlank2()*/"PATH TO BLANK 2 ");
+     //   egeResult.setBlank1(/*freshestEgeResult.getBlank1()*/"PATH TO BLANK 1");
+
+
         egeResult.setMinMark(freshestEgeResult.getMinMark());
         egeResult.setDateExam(freshestEgeResult.getDate());
         egeResult.setDatePublish(freshestEgeResult.getDatePublish());
+        try {
+            egeResult.setBlank1(getPathToBlank(freshestEgeResult,freshestEgeResult.getBlank1()));
+            egeResult.setBlank2(getPathToBlank(freshestEgeResult,freshestEgeResult.getBlank2()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         egeRequestToDB.setCurrentState((short) 4);
         egeRequestToDB.setResponsedAt(new Timestamp(System.currentTimeMillis()));
@@ -799,6 +810,70 @@ public class EventServiceEndpoint implements EventServicePort {
         return xmlString;
     }
 
+    private String getPathToBlank(EgeResult egeResult, String blank) throws IOException {
+        StringBuffer absoluthPath=new StringBuffer().append("http://192.168.1.115/Users/shurupov/Desktop/FRXs/EGE/");
+        absoluthPath.append(egeResult.getSubject());
+        absoluthPath.append("/");
 
+        String newDateExam=egeResult.getDate().replaceAll("-",".");
+        absoluthPath.append(newDateExam);
+        absoluthPath.append("/");
+
+        StringBuffer essentialPart=absoluthPath;
+
+        String connectionString="\\\\192.168.1.115\\Users\\shurupov\\Desktop\\FRXs\\EGE\\02\\2018.04.10\\";
+
+        String filePathPagesCount=connectionString+"pagescount.txt";
+
+        List<String> listOfKeys=new ArrayList<>();
+        List<String> listOfValues=new ArrayList<>();
+
+        File file = new File(filePathPagesCount);
+        String line;
+
+        BufferedReader reader=new BufferedReader(new FileReader(file));
+
+        while ((line=reader.readLine())!=null)
+        {
+            String[] parts=line.split(":",2);
+            if(parts.length>=2){
+                String key=parts[0];
+                String value=parts[1];
+                listOfKeys.add(key);
+                listOfValues.add(value);
+
+            }
+        }
+        reader.close();
+
+        int lineValue=0;
+        int capacityBlank=0;
+
+        for(int i=0;i<listOfKeys.size();i++){
+            lineValue=lineValue+Integer.valueOf(listOfValues.get(i));
+            if (listOfKeys.get(i).equalsIgnoreCase(blank)) {
+                capacityBlank=Integer.valueOf(listOfValues.get(i));
+                break;
+                }
+            }
+        List<String> listOfPaths=new ArrayList<>(capacityBlank);
+        String valueOfLineBlank;
+        StringBuffer pathForBlank=new StringBuffer(absoluthPath);
+        for(int i=0;i<capacityBlank;i++){
+            try(Stream<String> lines= Files.lines(Paths.get(connectionString+"list.txt"))){
+             //   valueOfLineBlank=lines.skip(lineValue-i-1).findFirst().get();
+                valueOfLineBlank=lines.skip(lineValue-capacityBlank+i).findFirst().get();
+            }
+            listOfPaths.add(valueOfLineBlank);
+            pathForBlank.append(listOfPaths.get(i).substring(0,1));
+            pathForBlank.append("/");
+            pathForBlank.append(listOfPaths.get(i).substring(1,2));
+            pathForBlank.append("/");
+            pathForBlank.append(valueOfLineBlank);
+            pathForBlank.append(".png;");
+            pathForBlank.append(essentialPart);
+        }
+        return pathForBlank.substring(0,pathForBlank.lastIndexOf(";"));
+    }
 
 }
