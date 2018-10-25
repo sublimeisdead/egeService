@@ -39,6 +39,13 @@ public class Error {
         return generateException(ErrorCode.EMPTY_EGE_REQUEST, message);
     }
 
+    public static BiException wrongDateApplicationException() {
+
+        String message = "Запрос на результат ЕГЭ пуст";
+        return generateException(ErrorCode.WRONG_DATE, message);
+    }
+
+
     public static BiException emptyDictionaryContentRequest() {
 
         String message = "Запрос на содержание справочников пуст";

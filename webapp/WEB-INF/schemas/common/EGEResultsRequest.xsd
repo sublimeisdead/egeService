@@ -183,7 +183,7 @@
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:element>
-                            <xs:element name="CodeSubject" type="xs:short" default="-2"/>
+                            <xs:element name="CodeSubject" type="xs:string" />
                             <xs:element name="SubjectText">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">

@@ -3,6 +3,7 @@ package ru.nahodka.bi.services.eventservice.endpoint;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import ru.nahodka.bi.services.dao.interfaces.*;
+import ru.nahodka.bi.services.eventservice.util.Util;
 import ru.nahodka.bi.services.model.*;
 import ru.nahodka.bi.services.model.dictionaries.*;
 import ru.nahodka.services.common.schemas.appealrequest._1_0.AppealRequestType;
@@ -209,7 +210,7 @@ public class EventServiceEndpoint implements EventServicePort {
             appealToDB.setRegion(soapAppealRequest.getAppeal().getRegion());
         }
 
-            if(soapAppealRequest.getAppeal().getCodSub()==-2){
+            if(soapAppealRequest.getAppeal().getCodSub().isEmpty()){
                 throw emptyCodeSubjectException();
             }else{
                 appealToDB.setSubject((soapAppealRequest.getAppeal().getCodSub()));
@@ -227,7 +228,7 @@ public class EventServiceEndpoint implements EventServicePort {
             appealToDB.setDateExam(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapAppealRequest.getAppeal().getDateExam()));
         }
 
-        if(soapAppealRequest.getAppeal().getCodeSchool()==-2){
+        if(soapAppealRequest.getAppeal().getCodeSchool().isEmpty()){
                 throw emptyCodeSchoolException();
         }else{
             appealToDB.setEduOrganization(soapAppealRequest.getAppeal().getCodeSchool());
@@ -239,7 +240,7 @@ public class EventServiceEndpoint implements EventServicePort {
             appealToDB.setEduOrganizationText(soapAppealRequest.getAppeal().getSchool());
         }
 
-        if(soapAppealRequest.getAppeal().getCodePlaceExam()==-2){
+        if(soapAppealRequest.getAppeal().getCodePlaceExam().isEmpty()){
             throw emptyCodePlaceExamException();
         }else {
             appealToDB.setExaminationPoint(soapAppealRequest.getAppeal().getCodePlaceExam());
@@ -318,6 +319,10 @@ public class EventServiceEndpoint implements EventServicePort {
             egeRequestToDB.setIdApplication(soapEgeRequest.getIdApplication());
         }
 
+        Date currentDate=new Date();
+        if(currentDate.before(Util.toDate(soapEgeRequest.getDateApplication()))){
+            throw wrongDateApplicationException();
+        }
         if(String.valueOf(soapEgeRequest.getDateApplication()).equals("1900-01-01")){
             throw emptyDateApplicationException();
         }else{
@@ -329,6 +334,7 @@ public class EventServiceEndpoint implements EventServicePort {
         if(soapEgeRequest.getAppType()==-2){
             throw emptyAppTypeException();
         }else{
+
             egeRequestToDB.setAppType(soapEgeRequest.getAppType());
         }
 
@@ -439,13 +445,13 @@ public class EventServiceEndpoint implements EventServicePort {
         calendar.setTimeInMillis(System.currentTimeMillis());
 
 
-        if(soapEgeRequest.getYearExam()==3000||soapEgeRequest.getYearExam()<2012||soapEgeRequest.getYearExam()>calendar.get(Calendar.YEAR)){
+        if(soapEgeRequest.getYearExam()==3000||soapEgeRequest.getYearExam()<2000||soapEgeRequest.getYearExam()>calendar.get(Calendar.YEAR)){
             throw emptyYearExamException();
         }else {
             egeRequestToDB.setYearExam(soapEgeRequest.getYearExam());
         }
 
-        if(soapEgeRequest.getCodeSubject()==-2){
+        if(soapEgeRequest.getCodeSubject().isEmpty()){
             throw emptyCodeSubjectException();
         }else{
             egeRequestToDB.setCodeSubject(soapEgeRequest.getCodeSubject());
@@ -549,7 +555,7 @@ public class EventServiceEndpoint implements EventServicePort {
         }
 
         Appeal appealFromDB = appealDAO.findAppealByIdApplication(appealCancelRequest.getIdApplication());
-        if(appealFromDB==null){
+         if(appealFromDB==null){
             throw notFound();
         }
 

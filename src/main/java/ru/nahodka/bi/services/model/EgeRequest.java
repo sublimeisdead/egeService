@@ -148,7 +148,7 @@ public class EgeRequest implements Serializable {
 
     @Basic
     @Column(name = "subject")
-    protected Short codeSubject;
+    protected String codeSubject;
 
 
     @Basic
@@ -384,11 +384,11 @@ public class EgeRequest implements Serializable {
         this.yearExam = yearExam;
     }
 
-    public Short getCodeSubject() {
+    public String getCodeSubject() {
         return codeSubject;
     }
 
-    public void setCodeSubject(Short codeSubject) {
+    public void setCodeSubject(String codeSubject) {
         this.codeSubject = codeSubject;
     }
 

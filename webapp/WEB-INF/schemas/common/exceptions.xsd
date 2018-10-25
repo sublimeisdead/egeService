@@ -64,6 +64,11 @@
                     <documentation>Отсутствует, либо пуст обязательный элемент ID_APPLICATION </documentation>
                 </annotation>
             </enumeration>
+            <enumeration value="WRONG_DATE">
+                <annotation>
+                    <documentation>Недопустимое значение DATE_APPLICATION </documentation>
+                </annotation>
+            </enumeration>
             <enumeration value="EMPTY_DATE_APPLICATION_EXCEPTION">
                 <annotation>
                     <documentation>Отсутствует, либо пуст обязательный элемент DATE_APPLICATION </documentation>

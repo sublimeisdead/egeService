@@ -102,7 +102,7 @@ public class Appeal implements Serializable {
 
     @Basic
     @Column(name = "subject")
-    protected Long subject;
+    protected String subject;
 
     @Basic
     @Column(name = "subject_text")
@@ -115,7 +115,7 @@ public class Appeal implements Serializable {
 
     @Basic
     @Column(name = "edu_organization")
-    protected Long eduOrganization;
+    protected String eduOrganization;
 
 
     @Basic
@@ -124,7 +124,7 @@ public class Appeal implements Serializable {
 
     @Basic
     @Column(name = "examination_point")
-    protected Long examinationPoint;
+    protected String examinationPoint;
 
 
     @Basic
@@ -385,11 +385,11 @@ public class Appeal implements Serializable {
         this.region = region;
     }
 
-    public Long getSubject() {
+    public String getSubject() {
         return subject;
     }
 
-    public void setSubject(Long subject) {
+    public void setSubject(String subject) {
         this.subject = subject;
     }
 
@@ -409,11 +409,11 @@ public class Appeal implements Serializable {
         this.dateExam = dateExam;
     }
 
-    public Long getEduOrganization() {
+    public String getEduOrganization() {
         return eduOrganization;
     }
 
-    public void setEduOrganization(Long eduOrganization) {
+    public void setEduOrganization(String eduOrganization) {
         this.eduOrganization = eduOrganization;
     }
 
@@ -425,11 +425,11 @@ public class Appeal implements Serializable {
         this.eduOrganizationText = eduOrganizationText;
     }
 
-    public Long getExaminationPoint() {
+    public String getExaminationPoint() {
         return examinationPoint;
     }
 
-    public void setExaminationPoint(Long examinationPoint) {
+    public void setExaminationPoint(String examinationPoint) {
         this.examinationPoint = examinationPoint;
     }
 

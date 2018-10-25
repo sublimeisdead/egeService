@@ -148,7 +148,7 @@
                             </xs:complexType>
                             </xs:element>
                             <xs:element name="region" type="xs:int" default="43"/>
-                            <xs:element name="Cod_sub" type="xs:long" default="-2"/>
+                            <xs:element name="Cod_sub" type="xs:string" />
                             <xs:element name="edu_sub">
                                 <xs:simpleType>
                                     <xs:restriction base="xs:string">
@@ -157,9 +157,9 @@
                                 </xs:simpleType>
                             </xs:element>
                             <xs:element name="date_exam" type="xs:date" default="1900-01-01"/>
-                            <xs:element name="code_school" type="xs:long" default="-2"/>
+                            <xs:element name="code_school" type="xs:string" />
                             <xs:element name="school" type="xs:string" />
-                            <xs:element name="code_place_exam" type="xs:long" default="-2" />
+                            <xs:element name="code_place_exam" type="xs:string"  />
                             <xs:element name="place_exam" type="xs:string"/>
                             <xs:element name="ap_rev" type="xs:int" default="-2"/>
                             <xs:element name="ap_rev_text" type="xs:string" />
