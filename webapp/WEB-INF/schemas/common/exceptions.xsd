@@ -49,6 +49,16 @@
                     <documentation>Отсутствует, либо пуст обязательный элемент DICTIONARY_CONTENT_REQUEST</documentation>
                 </annotation>
             </enumeration>
+            <enumeration value="EMPTY_REQUEST">
+                <annotation>
+                    <documentation>Отсутствует, либо пуст обязательный элемент NEW_REQUEST</documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="UNKNOWN_REQUEST_EXCEPTION">
+                <annotation>
+                    <documentation>Тип запроса неизвестен</documentation>
+                </annotation>
+            </enumeration>
             <enumeration value="EMPTY_SERVICE_CODE_EXCEPTION">
                 <annotation>
                     <documentation>Отсутствует, либо пуст обязательный элемент SERVICE_CODE </documentation>

@@ -31,6 +31,17 @@ public class Error {
         return generateException(ErrorCode.EMPTY_FACTS, message);
     }
 
+    public static BiException emptyRequestException() {
+
+        String message = "Отсутствует, либо пуст обязательный элемент NewRequest";
+        return generateException(ErrorCode.EMPTY_REQUEST, message);
+    }
+
+    public static BiException unknownRequestException() {
+
+        String message = "Тип запроса неизвестен";
+        return generateException(ErrorCode.UNKNOWN_REQUEST_EXCEPTION, message);
+    }
 
 
     public static BiException emptyEgeResultException() {
