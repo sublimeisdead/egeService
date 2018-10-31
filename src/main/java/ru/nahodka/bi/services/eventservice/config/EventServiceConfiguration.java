@@ -1,14 +1,14 @@
 package ru.nahodka.bi.services.eventservice.config;
 
 
+import coko.artefacts.x.ege.services._1_0.EventService;
+import coko.artefacts.x.ege.services._1_0.EventServicePort;
 import org.apache.cxf.Bus;
 import org.apache.cxf.bus.spring.SpringBus;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.nahodka.bi.services.eventservice.endpoint.EventServiceEndpoint;
-import ru.nahodka.services.schemas._1_0.EventService;
-import ru.nahodka.services.schemas._1_0.EventServicePort;
 
 import javax.xml.ws.Endpoint;
 

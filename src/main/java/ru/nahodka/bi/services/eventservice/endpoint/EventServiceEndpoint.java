@@ -1,12 +1,12 @@
 package ru.nahodka.bi.services.eventservice.endpoint;
 
+import coko.artefacts.x.ege.services._1_0.*;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import ru.nahodka.bi.services.dao.interfaces.*;
 import ru.nahodka.bi.services.eventservice.util.Util;
 import ru.nahodka.bi.services.model.*;
 import ru.nahodka.bi.services.model.dictionaries.*;
-import ru.nahodka.services.schemas._1_0.NewResponseType;
 
 import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 import static ru.nahodka.bi.services.eventservice.error.Error.*;
 
 @Service
-public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.EventServicePort {
+public class EventServiceEndpoint implements EventServicePort {
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
@@ -68,7 +68,7 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
     private AppealRequestStateDAO appealRequestStateDAO;
 
 
-    public ru.nahodka.services.schemas._1_0.AppealResponseType registerAppeal(ru.nahodka.services.schemas._1_0.AppealRequestType appealRequest) throws ru.nahodka.services.schemas._1_0.BiException {
+    public AppealResponseType registerAppeal(AppealRequestType appealRequest) throws BiException {
 
 
 
@@ -76,7 +76,7 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
             throw emptyAppealRequestException();
         }
 
-        ru.nahodka.services.schemas._1_0.AppealRequestType soapAppealRequest=appealRequest;
+        AppealRequestType soapAppealRequest=appealRequest;
 
         ru.nahodka.bi.services.model.Appeal appealToDB=new ru.nahodka.bi.services.model.Appeal();
 
@@ -273,7 +273,7 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
      //   appealToDB.setStateTransferred(soapAppealRequest.isStateTransferred());
         appealToDB.setApplicantMobilePhone(soapAppealRequest.getAppeal().getPhone());
         appealToDB.setCurrentState(1);
-        ru.nahodka.services.schemas._1_0.AppealResponseType response=new ru.nahodka.services.schemas._1_0.AppealResponseType();
+        AppealResponseType response=new AppealResponseType();
         response.setMessage("Заявление на апелляцию успешно сохранено");
 
         appealToDB.setResponsedAt(new Timestamp(System.currentTimeMillis()));
@@ -284,14 +284,14 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
     }
 
 
-    public ru.nahodka.services.schemas._1_0.EgeResultsResponseType getEgeResults (ru.nahodka.services.schemas._1_0.EgeResultsRequestType egeResultsRequest) throws ru.nahodka.services.schemas._1_0.BiException {
+    public EgeResultsResponseType getEgeResults (EgeResultsRequestType egeResultsRequest) throws BiException {
 
         if(egeResultsRequest.getEgeResultRequest()==null){
             throw emptyEgeResultException();
         }
 
         // СОХРАНЕНИЕ ЗАПРОСА В БД
-        ru.nahodka.services.schemas._1_0.EgeResultsRequestType.EgeResultRequest soapEgeRequest = egeResultsRequest.getEgeResultRequest();
+        EgeResultsRequestType.EgeResultRequest soapEgeRequest = egeResultsRequest.getEgeResultRequest();
 
         EgeRequest egeRequestToDB=new EgeRequest();
 
@@ -334,9 +334,6 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
             egeRequestToDB.setAppType(soapEgeRequest.getAppType());
         }
 
-    /*    if(soapEgeRequest.getApplicantEsiaId()!=null){
-            egeRequestToDB.setApplicantEsiaId(soapEgeRequest.getApplicantEsiaId());
-        } */
 
         if(soapEgeRequest.getSNILS().isEmpty()){
             throw emptySNILSException();
@@ -345,7 +342,6 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
         }
 
 
-      //  egeRequestToDB.setApplicantEqualsExaminee(soapEgeRequest.isApplicantEqualsExaminee());
 
         egeRequestToDB.setApplicantPatronymic(soapEgeRequest.getApplicantPatronymic().getSecondName());
         egeRequestToDB.setExamineePatronymic(soapEgeRequest.getApplicantPatronymic().getSecondNameGr());
@@ -427,15 +423,6 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
             egeRequestToDB.setEmailAddress(soapEgeRequest.getEmailAddress());
             egeRequestToDB.setMobilePhone(soapEgeRequest.getMobilePhone());
 
-
-      //  egeRequestToDB.setLastNameGr(soapEgeRequest.getLastNameGr());
-      //  egeRequestToDB.setFirstNameGr(soapEgeRequest.getFirstNameGr());
-      //  if(soapEgeRequest.getExamineePatronymic()!=null){
-       //     egeRequestToDB.setExamineePatronymic(soapEgeRequest.getExamineePatronymic());
-      //  }
-
-      //  egeRequestToDB.setExamineePassportSeries(soapEgeRequest.getExamineePassportSeries());
-      //  egeRequestToDB.setExamineePassportNumber(soapEgeRequest.getExamineePassportNumber());
         Timestamp timestamp=new Timestamp(System.currentTimeMillis());
         Calendar calendar=Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -460,8 +447,7 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
         }
 
         egeRequestToDB.setRequestedAt(timestamp);
-       // egeRequestToDB.setResponse(soapEgeRequest.getResponse());
-      // egeRequestDAO.saveEgeRequest(egeRequestToDB);
+
 
        List<EgeResult> egeResults=egeResultDAO.getEgeResult(String.valueOf(soapEgeRequest.getYearExam()),soapEgeRequest.getApplicantPassportSeries().getPasSerGr(),
                                                        soapEgeRequest.getApplicantPassportNumber().getPasNumGr(),String.valueOf(soapEgeRequest.getCodeSubject()));
@@ -473,9 +459,9 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
 
        EgeResult freshestEgeResult=getFreshestResult(egeResults);
 
-        ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult egeResult=new ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult();
+        EgeResultsResponseType.EgeResult egeResult=new EgeResultsResponseType.EgeResult();
 
-        ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.Subject egeResultSubject=new ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.Subject();
+        EgeResultsResponseType.EgeResult.Subject egeResultSubject=new EgeResultsResponseType.EgeResult.Subject();
         egeResultSubject.setId(String.valueOf(soapEgeRequest.getCodeSubject()));
         egeResultSubject.setName(freshestEgeResult.getSbj().getName());
         egeResult.setSubject(egeResultSubject);
@@ -484,22 +470,22 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
         egeResult.setTotal(freshestEgeResult.getTotal());
         egeResult.setGrade(freshestEgeResult.getGrade());
 
-       ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.PartA egeResultPartA=new ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.PartA();
+       EgeResultsResponseType.EgeResult.PartA egeResultPartA=new EgeResultsResponseType.EgeResult.PartA();
         egeResultPartA.setMask(freshestEgeResult.getMaskA());
         egeResultPartA.setTasksDone(freshestEgeResult.getTasksDoneA());
         egeResult.setPartA(egeResultPartA);
 
-        ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.PartB egeResultPartB=new ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.PartB();
+        EgeResultsResponseType.EgeResult.PartB egeResultPartB=new EgeResultsResponseType.EgeResult.PartB();
         egeResultPartB.setMask(freshestEgeResult.getMaskB());
         egeResultPartB.setTasksDone(freshestEgeResult.getTasksDoneB());
         egeResult.setPartB(egeResultPartB);
 
-        ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.PartC egeResultPartC=new ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.PartC();
+        EgeResultsResponseType.EgeResult.PartC egeResultPartC=new EgeResultsResponseType.EgeResult.PartC();
         egeResultPartC.setMask(freshestEgeResult.getMaskC());
         egeResultPartC.setTasksDone(freshestEgeResult.getTasksDoneC());
         egeResult.setPartC(egeResultPartC);
 
-        ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.PartD egeResultPartD=new ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.PartD();
+        EgeResultsResponseType.EgeResult.PartD egeResultPartD=new EgeResultsResponseType.EgeResult.PartD();
         egeResultPartD.setMask(freshestEgeResult.getMaskD());
         egeResultPartD.setTasksDone(freshestEgeResult.getTasksDoneD());
         egeResult.setPartD(egeResultPartD);
@@ -507,12 +493,12 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
         egeResult.setTasksDone(freshestEgeResult.getTasksDone());
         egeResult.setPersentageTasks(freshestEgeResult.getPercentageTasksDone());
 
-      ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.CodeOY egeResultCodeOY=new ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.CodeOY();
+      EgeResultsResponseType.EgeResult.CodeOY egeResultCodeOY=new EgeResultsResponseType.EgeResult.CodeOY();
         egeResultCodeOY.setId(freshestEgeResult.getCodeOy());
         egeResultCodeOY.setName(freshestEgeResult.getEduOrganization().getName());
         egeResult.setCodeOY(egeResultCodeOY);
 
-        ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.CodePPE egeResultCodePPE=new ru.nahodka.services.schemas._1_0.EgeResultsResponseType.EgeResult.CodePPE();
+        EgeResultsResponseType.EgeResult.CodePPE egeResultCodePPE=new EgeResultsResponseType.EgeResult.CodePPE();
         egeResultCodePPE.setId(freshestEgeResult.getCodePpe());
         egeResultCodePPE.setName(freshestEgeResult.getExaminationPoint().getName());
         egeResult.setCodePPE(egeResultCodePPE);
@@ -532,16 +518,11 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
 
         egeRequestToDB.setCurrentState((short) 4);
         egeRequestToDB.setResponsedAt(new Timestamp(System.currentTimeMillis()));
-      //  egeRequestToDB.setResponse(String.valueOf(egeResult));
-       // egeRequestDAO.saveEgeRequest(egeRequestToDB);
 
 
-
-      //  EgeResultsResponse egeResultsResponse=new EgeResultsResponse();
-
-        ru.nahodka.services.schemas._1_0.EgeResultsResponseType e=new ru.nahodka.services.schemas._1_0.EgeResultsResponseType();
+        EgeResultsResponseType e=new EgeResultsResponseType();
         e.setEgeResult(egeResult);
-     //   egeResultsResponse.setEgeResultResponse(e);
+
 
         egeRequestToDB.setResponse(jaxbObjectToXML(e));
         egeRequestDAO.saveEgeRequest(egeRequestToDB);
@@ -550,7 +531,7 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
     }
 
 
-    public ru.nahodka.services.schemas._1_0.AppealCancelResponseType cancelAppeal(ru.nahodka.services.schemas._1_0.AppealCancelRequestType appealCancelRequest) throws ru.nahodka.services.schemas._1_0.BiException {
+    public AppealCancelResponseType cancelAppeal(AppealCancelRequestType appealCancelRequest) throws BiException {
 
         if(appealCancelRequest==null){
             throw emptyAppealCancelRequest();
@@ -572,24 +553,24 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
         appealRequestStateDAO.saveAppealRequestState(appealRequestStateToDB);
 
 
-        ru.nahodka.services.schemas._1_0.AppealCancelResponseType appealCancelResponse=new ru.nahodka.services.schemas._1_0.AppealCancelResponseType();
+        AppealCancelResponseType appealCancelResponse=new AppealCancelResponseType();
         appealCancelResponse.setMessage("Заявление на отмену апелляции принято");
         return appealCancelResponse;
     }
 
 
-    public ru.nahodka.services.schemas._1_0.DictionaryContentType getDictionaryContent(ru.nahodka.services.schemas._1_0.DictionaryContentRequestType dictionaryContentRequest) throws ru.nahodka.services.schemas._1_0.BiException {
+    public DictionaryContentType getDictionaryContent(DictionaryContentRequestType dictionaryContentRequest) throws BiException {
 
 
-        ru.nahodka.services.schemas._1_0.NewResponseType newResponseType=new ru.nahodka.services.schemas._1_0.NewResponseType();
+        NewResponseType newResponseType=new NewResponseType();
         if(dictionaryContentRequest==null){
             throw emptyDictionaryContentRequest();
         }
 
-        ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records records=new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records();
+        DictionaryContentType.Dictionary.Records records=new DictionaryContentType.Dictionary.Records();
 
-        ru.nahodka.services.schemas._1_0.DictionaryContentType dictionaryContentSchema=new ru.nahodka.services.schemas._1_0.DictionaryContentType();
-        ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary dictionary=new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary();
+        DictionaryContentType dictionaryContentSchema=new DictionaryContentType();
+        DictionaryContentType.Dictionary dictionary=new DictionaryContentType.Dictionary();
 
 
         switch (dictionaryContentRequest.getDictionary().getDictionaryName().toLowerCase())
@@ -602,7 +583,7 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
 
                 for(ServiceType st:serviceTypes){
 
-                    ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record record = new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record();
+                    DictionaryContentType.Dictionary.Records.Record record = new DictionaryContentType.Dictionary.Records.Record();
                     record.setId(String.valueOf(st.getId()));
                     record.setValue(st.getName());
                     records.getRecord().add(record);
@@ -612,14 +593,14 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
                 dictionaryContentSchema.setDictionary(dictionary);
 
                 return dictionaryContentSchema;
-             //   break;
+
             case "applicant_type":
                 List<ApplicantType> applicantTypes=applicantTypeDAO.getApplicantTypeList();
                 dictionary.setId(dictionaryContentRequest.getDictionary().getDictionaryName());
 
                 for(ApplicantType at: applicantTypes){
 
-                    ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record record = new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record();
+                    DictionaryContentType.Dictionary.Records.Record record = new DictionaryContentType.Dictionary.Records.Record();
                     record.setId(String.valueOf(at.getId()));
                     record.setValue(at.getName());
                     records.getRecord().add(record);
@@ -636,7 +617,7 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
 
                 for(AppealHearingType aht: appealHearingTypes){
 
-                    ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record record = new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record();
+                    DictionaryContentType.Dictionary.Records.Record record = new DictionaryContentType.Dictionary.Records.Record();
                     record.setId(String.valueOf(aht.getId()));
                     record.setValue(aht.getName());
                     records.getRecord().add(record);
@@ -653,24 +634,24 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
 
                 for(ApplicationType at: applicationTypes){
 
-                    ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record record = new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record();
+                    DictionaryContentType.Dictionary.Records.Record record = new DictionaryContentType.Dictionary.Records.Record();
                     record.setId(String.valueOf(at.getId()));
                     record.setValue(at.getName());
                     records.getRecord().add(record);
                 }
-             //   dictionaryContentObject.setRecords(records);
+
                 dictionary.setRecords(records);
                 dictionaryContentSchema.setDictionary(dictionary);
 
                 return dictionaryContentSchema;
-            //    break;
+
             case "appeal_result_type":
                 List<AppealResultType> appealResultTypes=appealResultTypeDAO.getAppealResultTypeList();
                 dictionary.setId(dictionaryContentRequest.getDictionary().getDictionaryName());
 
                 for(AppealResultType art: appealResultTypes){
 
-                    ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record record = new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record();
+                    DictionaryContentType.Dictionary.Records.Record record = new DictionaryContentType.Dictionary.Records.Record();
                     record.setId(String.valueOf(art.getId()));
                     record.setValue(art.getName());
                     records.getRecord().add(record);
@@ -679,14 +660,14 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
                 dictionaryContentSchema.setDictionary(dictionary);
 
                 return dictionaryContentSchema;
-              //  break;
+
             case "appeal_type":
                 List<AppealType> appealTypes=appealTypeDAO.getAppealTypeList();
                 dictionary.setId(dictionaryContentRequest.getDictionary().getDictionaryName());
 
                 for(AppealType at: appealTypes){
 
-                    ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record record = new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record();
+                  DictionaryContentType.Dictionary.Records.Record record = new DictionaryContentType.Dictionary.Records.Record();
                     record.setId(String.valueOf(at.getId()));
                     record.setValue(at.getName());
                     records.getRecord().add(record);
@@ -695,14 +676,14 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
                 dictionaryContentSchema.setDictionary(dictionary);
 
                 return dictionaryContentSchema;
-             //   break;
+
             case "edu_organization":
                 List<EduOrganization> eduOrganizations=eduOrganizationDAO.getEduOrganizationList();
                 dictionary.setId(dictionaryContentRequest.getDictionary().getDictionaryName());
 
                 for(EduOrganization eo: eduOrganizations){
 
-                    ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record record = new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record();
+                    DictionaryContentType.Dictionary.Records.Record record = new DictionaryContentType.Dictionary.Records.Record();
                     record.setId(eo.getCode());
                     record.setValue(eo.getName());
                     records.getRecord().add(record);
@@ -711,14 +692,14 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
                 dictionaryContentSchema.setDictionary(dictionary);
 
                 return dictionaryContentSchema;
-             //   break;
+
             case "examination_point":
                 List<ExaminationPoint> examinationPoints=examinationPointDAO.getExaminationPointList();
                 dictionary.setId(dictionaryContentRequest.getDictionary().getDictionaryName());
 
                 for(ExaminationPoint ep: examinationPoints){
 
-                    ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record record = new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record();
+                    DictionaryContentType.Dictionary.Records.Record record = new DictionaryContentType.Dictionary.Records.Record();
                     record.setId(ep.getCode());
                     record.setValue(ep.getName());
                  record.setAddress(ep.getAddress());
@@ -739,7 +720,7 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
 
                 for(Subject sbj: subjects){
 
-                    ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record record = new ru.nahodka.services.schemas._1_0.DictionaryContentType.Dictionary.Records.Record();
+                    DictionaryContentType.Dictionary.Records.Record record = new DictionaryContentType.Dictionary.Records.Record();
                     record.setId(sbj.getCode());
                     record.setValue(sbj.getName());
 
@@ -791,10 +772,10 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
         return list.get(maxIndexOfDate);
     }
 
-    private static String jaxbObjectToXML(ru.nahodka.services.schemas._1_0.EgeResultsResponseType egeResultsResponse){
+    private static String jaxbObjectToXML(EgeResultsResponseType egeResultsResponse){
         String xmlString="";
         try{
-            JAXBContext context=JAXBContext.newInstance(ru.nahodka.services.schemas._1_0.EgeResultsResponseType.class);
+            JAXBContext context=JAXBContext.newInstance(EgeResultsResponseType.class);
             Marshaller m =context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,Boolean.TRUE);
             StringWriter sw=new StringWriter();
@@ -853,7 +834,7 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
                 break;
                 }
             }
-        List<String> listOfPaths=new ArrayList<>(capacityBlank);
+        List<String> listOfPaths=new ArrayList<>();
         String valueOfLineBlank;
         StringBuffer pathForBlank=new StringBuffer(absoluthPath);
         for(int i=0;i<capacityBlank;i++){
@@ -875,7 +856,7 @@ public class EventServiceEndpoint implements ru.nahodka.services.schemas._1_0.Ev
 
 
     @Override
-    public ru.nahodka.services.schemas._1_0.NewResponseType manageRequest(ru.nahodka.services.schemas._1_0.NewRequestType newRequest) throws ru.nahodka.services.schemas._1_0.BiException {
+    public NewResponseType manageRequest(NewRequestType newRequest) throws BiException {
         if(newRequest==null){
             throw emptyRequestException();
         }

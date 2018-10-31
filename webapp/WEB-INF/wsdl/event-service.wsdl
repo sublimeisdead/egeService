@@ -1,23 +1,15 @@
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-                  xmlns:tns="urn://nahodka.ru/services/schemas/1.0.0"
-                  xmlns:exceptions="urn://nahodka.ru/services/common/schemas/exceptions/1.0.0"
-                  targetNamespace="urn://nahodka.ru/services/schemas/1.0.0">
+                  xmlns:tns="urn://x-artefacts-coko/ege/services/1.0.0"
+                  xmlns:exceptions="urn://x-artefacts-coko/ege/services/exceptions/1.0.0"
+                  targetNamespace="urn://x-artefacts-coko/ege/services/1.0.0">
     <wsdl:types>
         <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                    targetNamespace="urn://nahodka.ru/services/schemas/1.0.0">
+                    targetNamespace="urn://x-artefacts-coko/ege/services/1.0.0">
             <xsd:include schemaLocation="../schemas/events-service/service-schema.xsd"/>
         </xsd:schema>
     </wsdl:types>
 
-
- <!--   <wsdl:message name="getEgeResultsIn">
-        <wsdl:part element="tns:NewRequest" name="EgeResultsRequest" />
-    </wsdl:message>
-
-    <wsdl:message name="getEgeResultsOut">
-        <wsdl:part element="tns:NewResponse" name="EgeResultsResponse" />
-    </wsdl:message> -->
 
     <wsdl:message name="manageRequestIn">
         <wsdl:part element="tns:NewRequest" name="NewRequest" />
@@ -27,21 +19,6 @@
         <wsdl:part element="tns:NewResponse" name="NewResponse" />
     </wsdl:message>
 
- <!--   <wsdl:message name="RegisterAppealIn">
-        <wsdl:part element="tns:AppealRequest" name="AppealRequest" />
-    </wsdl:message>
-
-    <wsdl:message name="RegisterAppealOut">
-        <wsdl:part element="tns:AppealResponse" name="AppealResponse" />
-    </wsdl:message>
-
-    <wsdl:message name="CancelAppealIn">
-        <wsdl:part element="tns:AppealCancelRequest" name="AppealCancelRequest" />
-    </wsdl:message>
-
-    <wsdl:message name="CancelAppealOut">
-        <wsdl:part element="tns:AppealCancelResponse" name="AppealCancelResponse" />
-    </wsdl:message> -->
 
 
 
@@ -51,57 +28,18 @@
 
     <wsdl:portType name="eventServicePort">
 
-  <!--      <wsdl:operation name="getEgeResults">
-            <wsdl:input message="tns:getEgeResultsIn"/>
-            <wsdl:output message="tns:getEgeResultsOut"/>
-            <wsdl:fault name="BiException" message="tns:BiException"/>
-        </wsdl:operation>
 
-        <wsdl:operation name="registerAppeal">
-            <wsdl:input message="tns:RegisterAppealIn"/>
-            <wsdl:output message="tns:RegisterAppealOut"/>
-            <wsdl:fault name="BiException" message="tns:BiException"/>
-        </wsdl:operation> -->
         <wsdl:operation name="manageRequest">
             <wsdl:input message="tns:manageRequestIn"/>
             <wsdl:output message="tns:manageRequestOut"/>
             <wsdl:fault name="BiException" message="tns:BiException"/>
         </wsdl:operation>
- <!--       <wsdl:operation name="cancelAppeal">
-            <wsdl:input message="tns:CancelAppealIn"/>
-            <wsdl:output message="tns:CancelAppealOut"/>
-            <wsdl:fault name="BiException" message="tns:BiException"/>
-        </wsdl:operation>-->
+
     </wsdl:portType>
 
     <wsdl:binding name="eventServicePortBinding" type="tns:eventServicePort">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
 
- <!--       <wsdl:operation name="getEgeResults">
-            <soap:operation soapAction="urn://nahodka.ru/services/eventService/getEgeResults" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="BiException">
-                <soap:fault name="BiException" use="literal"/>
-            </wsdl:fault>
-        </wsdl:operation>
-
-        <wsdl:operation name="cancelAppeal">
-            <soap:operation soapAction="urn://nahodka.ru/services/eventService/cancelAppeal" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="BiException">
-                <soap:fault name="BiException" use="literal"/>
-            </wsdl:fault>
-        </wsdl:operation> -->
 
         <wsdl:operation name="manageRequest">
             <soap:operation soapAction="urn://nahodka.ru/services/eventService/manageRequest" style="document"/>
@@ -116,18 +54,7 @@
             </wsdl:fault>
         </wsdl:operation>
 
-  <!--      <wsdl:operation name="registerAppeal">
-            <soap:operation soapAction="urn://nahodka.ru/services/eventService/registerAppeal" style="document"/>
-            <wsdl:input>
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body use="literal"/>
-            </wsdl:output>
-            <wsdl:fault name="BiException">
-                <soap:fault name="BiException" use="literal"/>
-            </wsdl:fault>
-        </wsdl:operation> -->
+
     </wsdl:binding>
 
     <wsdl:service name="EventService">

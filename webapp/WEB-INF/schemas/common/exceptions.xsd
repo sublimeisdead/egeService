@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema targetNamespace="urn://nahodka.ru/services/common/schemas/exceptions/1.0.0"
+<schema targetNamespace="urn://x-artefacts-coko/ege/services/exceptions/1.0.0"
         elementFormDefault="qualified"
         xmlns="http://www.w3.org/2001/XMLSchema"
-        xmlns:tns="urn://nahodka.ru/services/common/schemas/exceptions/1.0.0">
+        xmlns:tns="urn://x-artefacts-coko/ege/services/exceptions/1.0.0">
 
     <simpleType name="ErrorCode">
         <annotation>
