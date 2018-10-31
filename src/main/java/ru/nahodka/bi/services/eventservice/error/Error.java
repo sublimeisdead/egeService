@@ -25,6 +25,31 @@ public class Error {
         String message = "Запрос на результат ЕГЭ пуст";
         return generateException(ErrorCode.EMPTY_REQUEST, message);
     }
+    public static BiException emailFormatException() {
+
+        String message = "Неверный формат элемента Email";
+        return generateException(ErrorCode.EMAIL_FORMAT_EXCEPTION, message);
+    }
+    public static BiException snilsFormatException() {
+
+        String message = "Неверный формат элемента Snils";
+        return generateException(ErrorCode.SNILS_FORMAT_EXCEPTION, message);
+    }
+    public static BiException phoneFormatException() {
+
+        String message = "Неверный формат элемента Phone";
+        return generateException(ErrorCode.PHONE_FORMAT_EXCEPTION, message);
+    }
+    public static BiException passportSeriesFormatException() {
+
+        String message = "Неверный формат элемента pasSer";
+        return generateException(ErrorCode.PASSPORT_SERIES_FORMAT_EXCEPTION, message);
+    }
+    public static BiException passportNumberFormatException() {
+
+        String message = "Неверный формат элемента PasNum";
+        return generateException(ErrorCode.PASSPORT_NUMBER_FORMAT_EXCEPTION, message);
+    }
     public static BiException unknownRequestException() {
 
         String message = "Запрос на результат ЕГЭ пуст";

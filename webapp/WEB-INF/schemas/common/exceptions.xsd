@@ -64,6 +64,31 @@
                     <documentation>Отсутствует, либо пуст обязательный элемент SERVICE_CODE </documentation>
                 </annotation>
             </enumeration>
+            <enumeration value="EMAIL_FORMAT_EXCEPTION">
+                <annotation>
+                    <documentation>Неверный формат элемента EMAIL</documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="PHONE_FORMAT_EXCEPTION">
+                <annotation>
+                    <documentation>Неверный формат элемента PHONE </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="PASSPORT_SERIES_FORMAT__EXCEPTION">
+                <annotation>
+                    <documentation>Неверный формат элемента PASSPORT_SERIES </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="PASSPORT_NUMBER_FORMAT_EXCEPTION">
+                <annotation>
+                    <documentation>Неверный формат элемента PASSPORT_NUMBER </documentation>
+                </annotation>
+            </enumeration>
+            <enumeration value="SNILS_FORMAT_EXCEPTION">
+                <annotation>
+                    <documentation>Неверный формат элемента SNILS </documentation>
+                </annotation>
+            </enumeration>
             <enumeration value="EMPTY_SERVICE_NAME_EXCEPTION">
                 <annotation>
                     <documentation>Отсутствует, либо пуст обязательный элемент SERVICE_NAME </documentation>

@@ -111,11 +111,13 @@ public class EventServiceEndpoint implements EventServicePort {
             appealToDB.setAppType(soapAppealRequest.getAppeal().getAppType());
         }
 
-       // appealToDB.setApplicantEsiaId(soapAppealRequest.getApplicantEsiaId());
-        if(soapAppealRequest.getAppeal().getSNILS().isEmpty()){
+        String snils=soapAppealRequest.getAppeal().getSNILS();
+        if(snils.isEmpty()){
             throw emptySNILSException();
+        }else if(!snils.matches("\\d{11}")){
+                throw snilsFormatException();
         }else {
-            appealToDB.setSnils(soapAppealRequest.getAppeal().getSNILS());
+            appealToDB.setSnils(snils);
         }
 
 
@@ -148,32 +150,49 @@ public class EventServiceEndpoint implements EventServicePort {
                 appealToDB.setExamineePatronymic(soapAppealRequest.getAppeal().getSecondName().getSecondNameGr());
 
 
-
-            if(soapAppealRequest.getAppeal().getApplicantPassportSeries().getPasSerGr().isEmpty()) {
+            String pasSerGr=soapAppealRequest.getAppeal().getApplicantPassportSeries().getPasSerGr();
+            if(pasSerGr.isEmpty()) {
                 throw emptyPassportSeriesException();
-            }else{
-                appealToDB.setExamineePassportSeries(soapAppealRequest.getAppeal().getApplicantPassportSeries().getPasSerGr());
+            }else if(!pasSerGr.matches("\\d{4}")){
+                throw passportSeriesFormatException();
             }
-
-        if(soapAppealRequest.getAppeal().getApplicantPassportSeries().getPasSer().isEmpty()) {
+            else{
+                appealToDB.setExamineePassportSeries(pasSerGr);
+            }
+        String pasSer=soapAppealRequest.getAppeal().getApplicantPassportSeries().getPasSer();
+        if(pasSer.isEmpty()) {
             throw emptyApplicantPassportSeriesException();
+        }else if(!pasSer.matches("\\d{4}")){
+            throw passportSeriesFormatException();
         }else{
-            appealToDB.setApplicantPassportSeries(soapAppealRequest.getAppeal().getApplicantPassportSeries().getPasSer());
+            appealToDB.setApplicantPassportSeries(pasSer);
         }
 
-        if(soapAppealRequest.getAppeal().getApplicantPassportNumber().getPasNumGr().isEmpty()) {
+        String pasNumGr=soapAppealRequest.getAppeal().getApplicantPassportNumber().getPasNumGr();
+        if(pasNumGr.isEmpty()) {
             throw emptyPassportNumberException();
+        }else if(!pasNumGr.matches("\\d{6}")){
+            throw passportNumberFormatException();
         }else{
-            appealToDB.setExamineePassportNumber(soapAppealRequest.getAppeal().getApplicantPassportNumber().getPasNumGr());
+            appealToDB.setExamineePassportNumber(pasNumGr);
         }
-
-        if(soapAppealRequest.getAppeal().getApplicantPassportNumber().getPasNum().isEmpty()) {
+        String pasNum=soapAppealRequest.getAppeal().getApplicantPassportNumber().getPasNum();
+        if(pasNum.isEmpty()) {
             throw emptyApplicantPassportNumberException();
+        }else if(!pasNum.matches("\\d{6}")){
+            throw passportNumberFormatException();
         }else{
-            appealToDB.setApplicantPassportNumber(soapAppealRequest.getAppeal().getApplicantPassportNumber().getPasNum());
+            appealToDB.setApplicantPassportNumber(pasNum);
         }
+        String email=soapAppealRequest.getAppeal().getEmailAddress();
 
-        appealToDB.setEmailAddress(soapAppealRequest.getAppeal().getEmailAddress());
+        if(email.isEmpty()){
+
+        }else if(!email.matches("[0-9a-zA-Z_.\\-]{2,50}[@]{1}[0-9a-zA-Z_./-]{2,50}[.]{1}[a-zA-Z]{2,5}")){
+            throw emailFormatException();
+        }else{
+            appealToDB.setEmailAddress(email);
+        }
 
             if(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDateGr()==null || String.valueOf(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDateGr()).equals("1900-01-01")){
             throw emptyPassportDateException();
@@ -260,18 +279,17 @@ public class EventServiceEndpoint implements EventServicePort {
                 appealToDB.setPresenceText(soapAppealRequest.getAppeal().getApRevText());
         }
         appealToDB.setRequestedAt(new Timestamp(System.currentTimeMillis()));
-      //  appealToDB.setApplicantEqualsExaminee(soapAppealRequest.getAppeal().isApplicantEqualsExaminee());
+
         appealToDB.setYear(soapAppealRequest.getAppeal().getDateExam().getYear());
-     //   appealToDB.setResponsedAt(new Timestamp(new Date()));
-     //   appealToDB.setRegisteredAt();
-     //   appealToDB.setRegistrar(soapAppealRequest.getRegistrar().intValue());
-      //  appealToDB.setRegNumber(soapAppealRequest.getRegNumber);
-       // appealToDB.setCanceledAt();
-      //  appealToDB.setCommission(soapAppealRequest.getCommission().intValue());
-      //  appealToDB.setResult(soapAppealRequest.getResult().intValue());
-     //   appealToDB.setCurrentState(soapAppealRequest.getCurrentState().intValue());
-     //   appealToDB.setStateTransferred(soapAppealRequest.isStateTransferred());
-        appealToDB.setApplicantMobilePhone(soapAppealRequest.getAppeal().getPhone());
+
+        String phone=soapAppealRequest.getAppeal().getPhone();
+        if(!phone.isEmpty()){
+
+        }else if(!phone.matches("\\d{10}")) {
+            throw phoneFormatException();
+        }else{
+            appealToDB.setApplicantMobilePhone(phone);
+        }
         appealToDB.setCurrentState(1);
         AppealResponseType response=new AppealResponseType();
         response.setMessage("Заявление на апелляцию успешно сохранено");
@@ -326,7 +344,6 @@ public class EventServiceEndpoint implements EventServicePort {
         }
 
         egeRequestToDB.setReqId(UUID.randomUUID());
-      //  egeRequestToDB.setDateApplication(soapEgeRequest.getDateApplication());
         if(soapEgeRequest.getAppType()==-2){
             throw emptyAppTypeException();
         }else{
@@ -334,11 +351,13 @@ public class EventServiceEndpoint implements EventServicePort {
             egeRequestToDB.setAppType(soapEgeRequest.getAppType());
         }
 
-
-        if(soapEgeRequest.getSNILS().isEmpty()){
+        String snils=soapEgeRequest.getSNILS();
+        if(snils.isEmpty()){
             throw emptySNILSException();
+        }else if(!snils.matches("\\d{11}")){
+            throw snilsFormatException();
         }else{
-            egeRequestToDB.setSnils(soapEgeRequest.getSNILS());
+            egeRequestToDB.setSnils(snils);
         }
 
 
@@ -371,28 +390,40 @@ public class EventServiceEndpoint implements EventServicePort {
             egeRequestToDB.setApplicantSurname(soapEgeRequest.getApplicantSurname().getLastName());
         }
 
-        if(soapEgeRequest.getApplicantPassportNumber().getPasNum().isEmpty()){
+        String pasNum=soapEgeRequest.getApplicantPassportNumber().getPasNum();
+        if(pasNum.isEmpty()){
             throw emptyApplicantPassportNumberException();
+        }else if(!pasNum.matches("\\d{6}")){
+            throw passportNumberFormatException();
         }else {
-            egeRequestToDB.setApplicantPassportNumber(soapEgeRequest.getApplicantPassportNumber().getPasNum());
+            egeRequestToDB.setApplicantPassportNumber(pasNum);
         }
 
-        if(soapEgeRequest.getApplicantPassportNumber().getPasNumGr().isEmpty()){
+        String pasNumGr=soapEgeRequest.getApplicantPassportNumber().getPasNumGr();
+        if(pasNumGr.isEmpty()){
             throw emptyPassportNumberException();
+        }else if(!pasNumGr.matches("\\d{6}")){
+            throw passportNumberFormatException();
         }else {
-            egeRequestToDB.setExamineePassportNumber(soapEgeRequest.getApplicantPassportNumber().getPasNumGr());
+            egeRequestToDB.setExamineePassportNumber(pasNumGr);
         }
 
-        if(soapEgeRequest.getApplicantPassportSeries().getPasSer().isEmpty()){
+        String pasSer=soapEgeRequest.getApplicantPassportSeries().getPasSer();
+        if(pasSer.isEmpty()){
             throw emptyApplicantPassportSeriesException();
+        }else if(!pasSer.matches("\\d{4}")){
+            throw passportSeriesFormatException();
         }else{
-            egeRequestToDB.setApplicantPassportSeries(soapEgeRequest.getApplicantPassportSeries().getPasSer());
+            egeRequestToDB.setApplicantPassportSeries(pasSer);
         }
 
-        if(soapEgeRequest.getApplicantPassportSeries().getPasSerGr().isEmpty()){
+        String pasSerGr=soapEgeRequest.getApplicantPassportSeries().getPasSerGr();
+        if(pasSerGr.isEmpty()){
             throw emptyPassportSeriesException();
+        }else if(!pasSerGr.matches("\\d{4}")){
+            throw passportSeriesFormatException();
         }else{
-            egeRequestToDB.setExamineePassportSeries(soapEgeRequest.getApplicantPassportSeries().getPasSerGr());
+            egeRequestToDB.setExamineePassportSeries(pasSerGr);
         }
 
         if(soapEgeRequest.getApplicantPasOrg().getPasOrg().isEmpty()){
@@ -420,8 +451,25 @@ public class EventServiceEndpoint implements EventServicePort {
         }
 
 
-            egeRequestToDB.setEmailAddress(soapEgeRequest.getEmailAddress());
-            egeRequestToDB.setMobilePhone(soapEgeRequest.getMobilePhone());
+         //   egeRequestToDB.setEmailAddress(soapEgeRequest.getEmailAddress());
+        String phone=soapEgeRequest.getMobilePhone();
+     //   if(!phone.isEmpty()){}
+
+        if(!phone.matches("\\d{10}") && !phone.isEmpty()) {
+            throw phoneFormatException();
+        }else{
+            egeRequestToDB.setMobilePhone(phone);
+        }
+
+        String email=soapEgeRequest.getEmailAddress();
+
+
+        if(!email.matches("[0-9a-zA-Z_.\\-]{2,50}[@]{1}[0-9a-zA-Z_./-]{2,50}[.]{1}[a-zA-Z]{2,5}")&&!email.isEmpty()){
+            throw emailFormatException();
+        }else{
+            egeRequestToDB.setEmailAddress(email);
+        }
+
 
         Timestamp timestamp=new Timestamp(System.currentTimeMillis());
         Calendar calendar=Calendar.getInstance();
@@ -562,7 +610,7 @@ public class EventServiceEndpoint implements EventServicePort {
     public DictionaryContentType getDictionaryContent(DictionaryContentRequestType dictionaryContentRequest) throws BiException {
 
 
-        NewResponseType newResponseType=new NewResponseType();
+
         if(dictionaryContentRequest==null){
             throw emptyDictionaryContentRequest();
         }
