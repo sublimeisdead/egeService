@@ -305,7 +305,7 @@ public class EventServiceEndpoint implements EventServicePort {
     public EgeResultsResponseType getEgeResults (EgeResultsRequestType egeResultsRequest) throws BiException {
 
         if(egeResultsRequest.getEgeResultRequest()==null){
-            throw emptyEgeResultException();
+            throw emptyEgeResultRequestException();
         }
 
         // СОХРАНЕНИЕ ЗАПРОСА В БД
@@ -502,7 +502,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
     //  List<EgeResult> egeResults=egeResultDAO.getEgeResult(String.valueOf(2012),String.valueOf(4520),String.valueOf(564730),String.valueOf(4));
       if(egeResults.size()==0){
-          throw emptyEgeResultException();
+          throw notFound();
       }
 
        EgeResult freshestEgeResult=getFreshestResult(egeResults);
@@ -595,7 +595,12 @@ public class EventServiceEndpoint implements EventServicePort {
         appealRequestStateToDB.setStateId(6);
         appealRequestStateToDB.setComment("Запрос на отмену апелляции с ЕПГУ");
         appealRequestStateToDB.setPrevStateId(appealFromDB.getCurrentState());
-        appealRequestStateToDB.setSetAt(new Timestamp(System.currentTimeMillis()));
+
+
+
+        long millis=System.currentTimeMillis();
+        long droppedMillis=1000*(millis/1000);
+        appealRequestStateToDB.setSetAt(new Timestamp(droppedMillis));
         appealFromDB.setCurrentState(6);
         appealDAO.updateAppeal(appealFromDB);
         appealRequestStateDAO.saveAppealRequestState(appealRequestStateToDB);

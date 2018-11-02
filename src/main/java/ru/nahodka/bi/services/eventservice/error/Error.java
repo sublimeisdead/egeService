@@ -55,7 +55,7 @@ public class Error {
         String message = "Запрос на результат ЕГЭ пуст";
         return generateException(ErrorCode.UNKNOWN_REQUEST_EXCEPTION, message);
     }
-    public static BiException emptyEgeResultException() {
+    public static BiException emptyEgeResultRequestException() {
 
         String message = "Запрос на результат ЕГЭ пуст";
         return generateException(ErrorCode.EMPTY_EGE_REQUEST, message);
