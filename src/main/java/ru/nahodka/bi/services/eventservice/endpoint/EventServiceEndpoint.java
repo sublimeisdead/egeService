@@ -500,7 +500,6 @@ public class EventServiceEndpoint implements EventServicePort {
        List<EgeResult> egeResults=egeResultDAO.getEgeResult(String.valueOf(soapEgeRequest.getYearExam()),soapEgeRequest.getApplicantPassportSeries().getPasSerGr(),
                                                        soapEgeRequest.getApplicantPassportNumber().getPasNumGr(),String.valueOf(soapEgeRequest.getCodeSubject()));
 
-    //  List<EgeResult> egeResults=egeResultDAO.getEgeResult(String.valueOf(2012),String.valueOf(4520),String.valueOf(564730),String.valueOf(4));
       if(egeResults.size()==0){
           throw notFound();
       }
@@ -519,17 +518,29 @@ public class EventServiceEndpoint implements EventServicePort {
         egeResult.setGrade(freshestEgeResult.getGrade());
 
        EgeResultsResponseType.EgeResult.PartA egeResultPartA=new EgeResultsResponseType.EgeResult.PartA();
-        egeResultPartA.setMask(freshestEgeResult.getMaskA());
+       if(freshestEgeResult.getMaskA()==null){
+           egeResultPartA.setMask(" ");
+       }else{
+           egeResultPartA.setMask(freshestEgeResult.getMaskA());
+       }
         egeResultPartA.setTasksDone(freshestEgeResult.getTasksDoneA());
         egeResult.setPartA(egeResultPartA);
 
         EgeResultsResponseType.EgeResult.PartB egeResultPartB=new EgeResultsResponseType.EgeResult.PartB();
-        egeResultPartB.setMask(freshestEgeResult.getMaskB());
+        if( freshestEgeResult.getMaskB()==null){
+            egeResultPartB.setMask(" ");
+        }else{
+            egeResultPartB.setMask(freshestEgeResult.getMaskB());
+        }
         egeResultPartB.setTasksDone(freshestEgeResult.getTasksDoneB());
         egeResult.setPartB(egeResultPartB);
 
         EgeResultsResponseType.EgeResult.PartC egeResultPartC=new EgeResultsResponseType.EgeResult.PartC();
-        egeResultPartC.setMask(freshestEgeResult.getMaskC());
+        if(freshestEgeResult.getMaskC()==null){
+            egeResultPartC.setMask(" ");
+        }else{
+            egeResultPartC.setMask(freshestEgeResult.getMaskC());
+        }
         egeResultPartC.setTasksDone(freshestEgeResult.getTasksDoneC());
         egeResult.setPartC(egeResultPartC);
 
@@ -598,9 +609,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
 
 
-        long millis=System.currentTimeMillis();
-        long droppedMillis=1000*(millis/1000);
-        appealRequestStateToDB.setSetAt(new Timestamp(droppedMillis));
+        appealRequestStateToDB.setSetAt(new Timestamp(1000*(System.currentTimeMillis()/1000)));
         appealFromDB.setCurrentState(6);
         appealDAO.updateAppeal(appealFromDB);
         appealRequestStateDAO.saveAppealRequestState(appealRequestStateToDB);

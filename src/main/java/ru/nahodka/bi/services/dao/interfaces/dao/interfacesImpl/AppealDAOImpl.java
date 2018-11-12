@@ -41,7 +41,7 @@ public class AppealDAOImpl implements AppealDAO {
 
     @Override
     public Appeal updateAppeal(Appeal appeal) {
-        sessionFactory.getCurrentSession().saveOrUpdate(appeal);
+       sessionFactory.getCurrentSession().saveOrUpdate(appeal);
         return appeal;
     }
 

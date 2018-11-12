@@ -342,7 +342,7 @@
         <complexType>
             <sequence>
                 <element name="ErrorCode" type="tns:ErrorCode"/>
-                <element name="Details"/>
+                <element name="Details" type="string"/>
             </sequence>
         </complexType>
     </element>
