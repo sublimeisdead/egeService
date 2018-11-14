@@ -186,9 +186,7 @@ public class EventServiceEndpoint implements EventServicePort {
         }
         String email=soapAppealRequest.getAppeal().getEmailAddress();
 
-        if(email.isEmpty()){
-
-        }else if(!email.matches("[0-9a-zA-Z_.\\-]{2,50}[@]{1}[0-9a-zA-Z_./-]{2,50}[.]{1}[a-zA-Z]{2,5}")){
+        if(!email.matches("[0-9a-zA-Z_.\\-]{2,50}[@]{1}[0-9a-zA-Z_./-]{2,50}[.]{1}[a-zA-Z]{2,5}")&& !email.isEmpty()){
             throw emailFormatException();
         }else{
             appealToDB.setEmailAddress(email);
@@ -283,21 +281,31 @@ public class EventServiceEndpoint implements EventServicePort {
         appealToDB.setYear(soapAppealRequest.getAppeal().getDateExam().getYear());
 
         String phone=soapAppealRequest.getAppeal().getPhone();
-        if(!phone.isEmpty()){
 
-        }else if(!phone.matches("\\d{10}")) {
+
+        if(!phone.matches("\\d{10}") && !phone.isEmpty()) {
             throw phoneFormatException();
         }else{
             appealToDB.setApplicantMobilePhone(phone);
         }
-        appealToDB.setCurrentState(1);
-        AppealResponseType response=new AppealResponseType();
-        response.setMessage("Заявление на апелляцию успешно сохранено");
 
-        appealToDB.setResponsedAt(new Timestamp(System.currentTimeMillis()));
-
+      //  appealToDB.setCurrentState(1);
         appealDAO.saveAppealRequest(appealToDB);
 
+        AppealResponseType response=new AppealResponseType();
+        response.setMessage("Заявление на апелляцию успешно сохранено");
+        appealToDB.setResponsedAt(new Timestamp(System.currentTimeMillis()));
+
+        AppealRequestState appealRequestState=new AppealRequestState();
+        appealRequestState.setComment("Апелляция с ЕПГУ");
+        appealRequestState.setStateId(1);
+        appealRequestState.setSetAt(new Timestamp(1000*(System.currentTimeMillis()/1000)));
+        appealRequestState.setRequestId(Math.toIntExact(appealToDB.getId()));
+        appealRequestStateDAO.saveAppealRequestState(appealRequestState);
+
+        appealToDB.setResponsedAt(new Timestamp(System.currentTimeMillis()));
+        appealToDB.setCurrentState(Math.toIntExact(appealRequestState.getId()));
+        appealDAO.updateAppeal(appealToDB);
         return response;
     }
 
@@ -610,9 +618,10 @@ public class EventServiceEndpoint implements EventServicePort {
 
 
         appealRequestStateToDB.setSetAt(new Timestamp(1000*(System.currentTimeMillis()/1000)));
-        appealFromDB.setCurrentState(6);
-        appealDAO.updateAppeal(appealFromDB);
         appealRequestStateDAO.saveAppealRequestState(appealRequestStateToDB);
+        appealFromDB.setCurrentState(Math.toIntExact(appealRequestStateToDB.getId()));
+        appealDAO.updateAppeal(appealFromDB);
+
 
 
         AppealCancelResponseType appealCancelResponse=new AppealCancelResponseType();
