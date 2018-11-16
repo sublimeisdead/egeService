@@ -4,14 +4,17 @@ import coko.artefacts.x.ege.services._1_0.*;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import ru.nahodka.bi.services.dao.interfaces.*;
+import ru.nahodka.bi.services.eventservice.error.Error;
 import ru.nahodka.bi.services.eventservice.util.Util;
 import ru.nahodka.bi.services.model.*;
 import ru.nahodka.bi.services.model.dictionaries.*;
 
 import javax.annotation.Resource;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -73,7 +76,9 @@ public class EventServiceEndpoint implements EventServicePort {
 
 
         if(appealRequest==null){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyAppealRequestException().getMessage());
             throw emptyAppealRequestException();
+
         }
 
         AppealRequestType soapAppealRequest=appealRequest;
@@ -81,18 +86,21 @@ public class EventServiceEndpoint implements EventServicePort {
         ru.nahodka.bi.services.model.Appeal appealToDB=new ru.nahodka.bi.services.model.Appeal();
 
         if(soapAppealRequest.getAppeal().getServiceCode().isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyServiceCodeException().getMessage());
             throw emptyServiceCodeException();
         }else{
         appealToDB.setServiceCode(soapAppealRequest.getAppeal().getServiceCode());
         }
 
         if(soapAppealRequest.getAppeal().getServiceFullName().isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyServiceNameException().getMessage());
             throw emptyServiceNameException();
         }else {
             appealToDB.setServiceFullName(soapAppealRequest.getAppeal().getServiceFullName());
         }
 
         if(soapAppealRequest.getAppeal().getIdApplication().isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyIdApplicationException().getMessage());
             throw emptyIdApplicationException();
         }else{
             appealToDB.setIdApplication(soapAppealRequest.getAppeal().getIdApplication());
@@ -101,11 +109,13 @@ public class EventServiceEndpoint implements EventServicePort {
         appealToDB.setReqId(UUID.randomUUID());
 
         if(soapAppealRequest.getAppeal().getDateApplication()==null || String.valueOf(soapAppealRequest.getAppeal().getDateApplication()).equals("1900-01-01")){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyDateApplicationException().getMessage());
             throw emptyDateApplicationException();
         }else{
             appealToDB.setDateApplication(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapAppealRequest.getAppeal().getDateApplication()));
         }
-        if(Short.valueOf(soapAppealRequest.getAppeal().getAppType())==-2){
+        if(soapAppealRequest.getAppeal().getAppType() ==-2){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyAppealRequestException().getMessage());
             throw emptyAppTypeException();
         }else{
             appealToDB.setAppType(soapAppealRequest.getAppeal().getAppType());
@@ -113,8 +123,10 @@ public class EventServiceEndpoint implements EventServicePort {
 
         String snils=soapAppealRequest.getAppeal().getSNILS();
         if(snils.isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptySNILSException().getMessage());
             throw emptySNILSException();
         }else if(!snils.matches("\\d{11}")){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+snilsFormatException().getMessage());
                 throw snilsFormatException();
         }else {
             appealToDB.setSnils(snils);
@@ -122,11 +134,13 @@ public class EventServiceEndpoint implements EventServicePort {
 
 
             if (soapAppealRequest.getAppeal().getApplicantSurname().getLastNameGr().isEmpty()) {
+                logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyLastNameGrException().getMessage());
                 throw emptyLastNameGrException();
             }else{
                 appealToDB.setExamineeSurname(soapAppealRequest.getAppeal().getApplicantSurname().getLastNameGr());
             }
              if (soapAppealRequest.getAppeal().getApplicantSurname().getLastName().isEmpty()) {
+                 logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyApplicantSurnameException().getMessage());
                 throw emptyApplicantSurnameException();
             }else {
                  appealToDB.setApplicantSurname(soapAppealRequest.getAppeal().getApplicantSurname().getLastName());
@@ -134,12 +148,14 @@ public class EventServiceEndpoint implements EventServicePort {
 
 
             if(soapAppealRequest.getAppeal().getApplicantName().getFirstNameGr().isEmpty()) {
+                logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyFirstNameGrException().getMessage());
                 throw emptyFirstNameGrException();
             }else {
                 appealToDB.setExamineeName(soapAppealRequest.getAppeal().getApplicantName().getFirstNameGr());
             }
 
             if(soapAppealRequest.getAppeal().getApplicantName().getFirstName().isEmpty()){
+                logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyApplicantNameException().getMessage());
             throw emptyApplicantNameException();
             }else{
                 appealToDB.setApplicantName(soapAppealRequest.getAppeal().getApplicantName().getFirstName());
@@ -152,8 +168,10 @@ public class EventServiceEndpoint implements EventServicePort {
 
             String pasSerGr=soapAppealRequest.getAppeal().getApplicantPassportSeries().getPasSerGr();
             if(pasSerGr.isEmpty()) {
+                logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyPassportSeriesException().getMessage());
                 throw emptyPassportSeriesException();
             }else if(!pasSerGr.matches("\\d{4}")){
+                logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+passportSeriesFormatException().getMessage());
                 throw passportSeriesFormatException();
             }
             else{
@@ -161,8 +179,10 @@ public class EventServiceEndpoint implements EventServicePort {
             }
         String pasSer=soapAppealRequest.getAppeal().getApplicantPassportSeries().getPasSer();
         if(pasSer.isEmpty()) {
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyApplicantPassportSeriesException().getMessage());
             throw emptyApplicantPassportSeriesException();
         }else if(!pasSer.matches("\\d{4}")){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+passportSeriesFormatException().getMessage());
             throw passportSeriesFormatException();
         }else{
             appealToDB.setApplicantPassportSeries(pasSer);
@@ -170,16 +190,20 @@ public class EventServiceEndpoint implements EventServicePort {
 
         String pasNumGr=soapAppealRequest.getAppeal().getApplicantPassportNumber().getPasNumGr();
         if(pasNumGr.isEmpty()) {
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyPassportNumberException().getMessage());
             throw emptyPassportNumberException();
         }else if(!pasNumGr.matches("\\d{6}")){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+passportNumberFormatException().getMessage());
             throw passportNumberFormatException();
         }else{
             appealToDB.setExamineePassportNumber(pasNumGr);
         }
         String pasNum=soapAppealRequest.getAppeal().getApplicantPassportNumber().getPasNum();
         if(pasNum.isEmpty()) {
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyApplicantPassportNumberException().getMessage());
             throw emptyApplicantPassportNumberException();
         }else if(!pasNum.matches("\\d{6}")){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+passportNumberFormatException().getMessage());
             throw passportNumberFormatException();
         }else{
             appealToDB.setApplicantPassportNumber(pasNum);
@@ -187,30 +211,35 @@ public class EventServiceEndpoint implements EventServicePort {
         String email=soapAppealRequest.getAppeal().getEmailAddress();
 
         if(!email.matches("[0-9a-zA-Z_.\\-]{2,50}[@]{1}[0-9a-zA-Z_./-]{2,50}[.]{1}[a-zA-Z]{2,5}")&& !email.isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emailFormatException().getMessage());
             throw emailFormatException();
         }else{
             appealToDB.setEmailAddress(email);
         }
 
             if(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDateGr()==null || String.valueOf(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDateGr()).equals("1900-01-01")){
+                logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyPassportDateException().getMessage());
             throw emptyPassportDateException();
             }else{
                 appealToDB.setExamineePasDate(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDateGr()));
             }
 
             if(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDate()==null || String.valueOf(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDate()).equals("1900-01-01") ) {
+                logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyApplicantPassportDateException().getMessage());
                 throw emptyApplicantPassportDateException();
             }else {
                 appealToDB.setApplicantPasDate(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapAppealRequest.getAppeal().getApplicantPasDate().getPasDate()));
             }
 
             if(soapAppealRequest.getAppeal().getApplicantPasOrg().getPasOrgGr().isEmpty()){
+                logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyPassportOrgException().getMessage());
                 throw emptyPassportOrgException();
             }else{
                 appealToDB.setExamineePasOrg(soapAppealRequest.getAppeal().getApplicantPasOrg().getPasOrgGr());
             }
 
             if(soapAppealRequest.getAppeal().getApplicantPasOrg().getPasOrg().isEmpty()){
+                logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyApplicantPassportOrgException().getMessage());
                 throw emptyApplicantPassportOrgException();
             }else {
                 appealToDB.setApplicantPasOrg(soapAppealRequest.getAppeal().getApplicantPasOrg().getPasOrg());
@@ -218,60 +247,70 @@ public class EventServiceEndpoint implements EventServicePort {
 
 
         if(soapAppealRequest.getAppeal().getRegion()!=43){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+wrongRegionCodeException().getMessage());
                 throw wrongRegionCodeException();
         }else {
             appealToDB.setRegion(soapAppealRequest.getAppeal().getRegion());
         }
 
             if(soapAppealRequest.getAppeal().getCodSub().isEmpty()){
+                logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyCodeSubjectException().getMessage());
                 throw emptyCodeSubjectException();
             }else{
                 appealToDB.setSubject((soapAppealRequest.getAppeal().getCodSub()));
             }
 
         if(soapAppealRequest.getAppeal().getEduSub().isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptySubjectTextException().getMessage());
             throw emptySubjectTextException();
         }else{
             appealToDB.setSubjectText(soapAppealRequest.getAppeal().getEduSub());
         }
 
         if(soapAppealRequest.getAppeal().getDateExam()==null ||String.valueOf(soapAppealRequest.getAppeal().getDateExam()).equals("1900-01-01") ){
-                throw emptyExamDateException();
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyExamDateException().getMessage());
+            throw emptyExamDateException();
         }else{
             appealToDB.setDateExam(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapAppealRequest.getAppeal().getDateExam()));
         }
 
         if(soapAppealRequest.getAppeal().getCodeSchool().isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyCodeSchoolException().getMessage());
                 throw emptyCodeSchoolException();
         }else{
             appealToDB.setEduOrganization(soapAppealRequest.getAppeal().getCodeSchool());
         }
 
         if(soapAppealRequest.getAppeal().getSchool().isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptySchoolException().getMessage());
                 throw emptySchoolException();
         }else{
             appealToDB.setEduOrganizationText(soapAppealRequest.getAppeal().getSchool());
         }
 
         if(soapAppealRequest.getAppeal().getCodePlaceExam().isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyCodePlaceExamException().getMessage());
             throw emptyCodePlaceExamException();
         }else {
             appealToDB.setExaminationPoint(soapAppealRequest.getAppeal().getCodePlaceExam());
         }
 
         if(soapAppealRequest.getAppeal().getPlaceExam().isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyPlaceExamException().getMessage());
                 throw emptyPlaceExamException();
         }else{
             appealToDB.setExaminationPointText(soapAppealRequest.getAppeal().getPlaceExam());
         }
 
         if(soapAppealRequest.getAppeal().getApRev()==-2){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyPresenceException().getMessage());
             throw emptyPresenceException();
         }else {
             appealToDB.setPresence(soapAppealRequest.getAppeal().getApRev());
         }
 
         if(soapAppealRequest.getAppeal().getApRevText().isEmpty()){
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+emptyPresenceTextException().getMessage());
                 throw emptyPresenceTextException();
         }else{
                 appealToDB.setPresenceText(soapAppealRequest.getAppeal().getApRevText());
@@ -284,6 +323,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
 
         if(!phone.matches("\\d{10}") && !phone.isEmpty()) {
+            logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: fail. Причина: "+phoneFormatException().getMessage());
             throw phoneFormatException();
         }else{
             appealToDB.setApplicantMobilePhone(phone);
@@ -306,6 +346,7 @@ public class EventServiceEndpoint implements EventServicePort {
         appealToDB.setResponsedAt(new Timestamp(System.currentTimeMillis()));
         appealToDB.setCurrentState(Math.toIntExact(appealRequestState.getId()));
         appealDAO.updateAppeal(appealToDB);
+        logger.info("Запрос на регистрацию апелляции по результатам ЕГЭ. Результат: успешно. ID: "+appealToDB.getId());
         return response;
     }
 
@@ -313,6 +354,7 @@ public class EventServiceEndpoint implements EventServicePort {
     public EgeResultsResponseType getEgeResults (EgeResultsRequestType egeResultsRequest) throws BiException {
 
         if(egeResultsRequest.getEgeResultRequest()==null){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyEgeResultRequestException().getMessage());
             throw emptyEgeResultRequestException();
         }
 
@@ -322,19 +364,21 @@ public class EventServiceEndpoint implements EventServicePort {
         EgeRequest egeRequestToDB=new EgeRequest();
 
         if(soapEgeRequest.getServiceCode().isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyServiceCodeException().getMessage());
             throw emptyServiceCodeException();
         }else{
             egeRequestToDB.setServiceCode(soapEgeRequest.getServiceCode());
         }
 
         if(soapEgeRequest.getServiceFullName().isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyServiceNameException().getMessage());
             throw emptyServiceNameException();
         }else{
             egeRequestToDB.setServiceFullName(soapEgeRequest.getServiceFullName());
         }
 
         if(soapEgeRequest.getIdApplication().isEmpty()){
-
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyIdApplicationException().getMessage());
            throw emptyIdApplicationException();
 
         }else{
@@ -343,9 +387,11 @@ public class EventServiceEndpoint implements EventServicePort {
 
         Date currentDate=new Date();
         if(currentDate.before(Util.toDate(soapEgeRequest.getDateApplication()))){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+wrongDateApplicationException().getMessage());
             throw wrongDateApplicationException();
         }
         if(String.valueOf(soapEgeRequest.getDateApplication()).equals("1900-01-01")){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyDateApplicationException().getMessage());
             throw emptyDateApplicationException();
         }else{
             egeRequestToDB.setDateApplication(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapEgeRequest.getDateApplication()));
@@ -353,6 +399,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
         egeRequestToDB.setReqId(UUID.randomUUID());
         if(soapEgeRequest.getAppType()==-2){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyAppTypeException().getMessage());
             throw emptyAppTypeException();
         }else{
 
@@ -361,8 +408,10 @@ public class EventServiceEndpoint implements EventServicePort {
 
         String snils=soapEgeRequest.getSNILS();
         if(snils.isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptySNILSException().getMessage());
             throw emptySNILSException();
         }else if(!snils.matches("\\d{11}")){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+snilsFormatException().getMessage());
             throw snilsFormatException();
         }else{
             egeRequestToDB.setSnils(snils);
@@ -375,24 +424,28 @@ public class EventServiceEndpoint implements EventServicePort {
 
 
         if(soapEgeRequest.getApplicantName().getFirstNameGr().isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyFirstNameGrException().getMessage());
             throw emptyFirstNameGrException();
         }else{
             egeRequestToDB.setFirstNameGr(soapEgeRequest.getApplicantName().getFirstNameGr());
         }
 
         if(soapEgeRequest.getApplicantName().getFirstName().isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyApplicantNameException().getMessage());
             throw emptyApplicantNameException();
         }else{
             egeRequestToDB.setApplicantName(soapEgeRequest.getApplicantName().getFirstName());
         }
 
         if(soapEgeRequest.getApplicantSurname().getLastNameGr().isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyLastNameGrException().getMessage());
             throw emptyLastNameGrException();
         }else{
             egeRequestToDB.setLastNameGr(soapEgeRequest.getApplicantSurname().getLastNameGr());
         }
 
         if(soapEgeRequest.getApplicantSurname().getLastName().isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyApplicantSurnameException().getMessage());
             throw emptyApplicantSurnameException();
         }else{
             egeRequestToDB.setApplicantSurname(soapEgeRequest.getApplicantSurname().getLastName());
@@ -400,8 +453,10 @@ public class EventServiceEndpoint implements EventServicePort {
 
         String pasNum=soapEgeRequest.getApplicantPassportNumber().getPasNum();
         if(pasNum.isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyApplicantPassportNumberException().getMessage());
             throw emptyApplicantPassportNumberException();
         }else if(!pasNum.matches("\\d{6}")){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+passportNumberFormatException().getMessage());
             throw passportNumberFormatException();
         }else {
             egeRequestToDB.setApplicantPassportNumber(pasNum);
@@ -409,8 +464,10 @@ public class EventServiceEndpoint implements EventServicePort {
 
         String pasNumGr=soapEgeRequest.getApplicantPassportNumber().getPasNumGr();
         if(pasNumGr.isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyPassportNumberException().getMessage());
             throw emptyPassportNumberException();
         }else if(!pasNumGr.matches("\\d{6}")){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+passportNumberFormatException().getMessage());
             throw passportNumberFormatException();
         }else {
             egeRequestToDB.setExamineePassportNumber(pasNumGr);
@@ -418,8 +475,10 @@ public class EventServiceEndpoint implements EventServicePort {
 
         String pasSer=soapEgeRequest.getApplicantPassportSeries().getPasSer();
         if(pasSer.isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyApplicantPassportSeriesException().getMessage());
             throw emptyApplicantPassportSeriesException();
         }else if(!pasSer.matches("\\d{4}")){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+passportSeriesFormatException().getMessage());
             throw passportSeriesFormatException();
         }else{
             egeRequestToDB.setApplicantPassportSeries(pasSer);
@@ -427,32 +486,38 @@ public class EventServiceEndpoint implements EventServicePort {
 
         String pasSerGr=soapEgeRequest.getApplicantPassportSeries().getPasSerGr();
         if(pasSerGr.isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyPassportSeriesException().getMessage());
             throw emptyPassportSeriesException();
         }else if(!pasSerGr.matches("\\d{4}")){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+passportSeriesFormatException().getMessage());
             throw passportSeriesFormatException();
         }else{
             egeRequestToDB.setExamineePassportSeries(pasSerGr);
         }
 
         if(soapEgeRequest.getApplicantPasOrg().getPasOrg().isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyApplicantPassportOrgException().getMessage());
             throw emptyApplicantPassportOrgException();
         }else{
             egeRequestToDB.setApplicantPasOrg(soapEgeRequest.getApplicantPasOrg().getPasOrg());
         }
 
         if(soapEgeRequest.getApplicantPasOrg().getPasOrgGr().isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyPassportOrgException().getMessage());
             throw emptyPassportOrgException();
         }else{
             egeRequestToDB.setExamineePasOrg(soapEgeRequest.getApplicantPasOrg().getPasOrgGr());
         }
 
         if(String.valueOf(soapEgeRequest.getApplicantPasDate().getPasDate()).equals("1900-01-01")){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyApplicantPassportDateException().getMessage());
             throw emptyApplicantPassportDateException();
         }else{
             egeRequestToDB.setApplicantPasDate(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapEgeRequest.getApplicantPasDate().getPasDate()));
         }
 
         if(String.valueOf(soapEgeRequest.getApplicantPasDate().getPasDateGr()).equals("1900-01-01")){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyPassportDateException().getMessage());
             throw emptyPassportDateException();
         }else{
             egeRequestToDB.setExamineePasDate(ru.nahodka.bi.services.eventservice.util.Util.toDate(soapEgeRequest.getApplicantPasDate().getPasDateGr()));
@@ -464,6 +529,7 @@ public class EventServiceEndpoint implements EventServicePort {
      //   if(!phone.isEmpty()){}
 
         if(!phone.matches("\\d{10}") && !phone.isEmpty()) {
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+phoneFormatException().getMessage());
             throw phoneFormatException();
         }else{
             egeRequestToDB.setMobilePhone(phone);
@@ -473,6 +539,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
 
         if(!email.matches("[0-9a-zA-Z_.\\-]{2,50}[@]{1}[0-9a-zA-Z_./-]{2,50}[.]{1}[a-zA-Z]{2,5}")&&!email.isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emailFormatException().getMessage());
             throw emailFormatException();
         }else{
             egeRequestToDB.setEmailAddress(email);
@@ -485,18 +552,21 @@ public class EventServiceEndpoint implements EventServicePort {
 
 
         if(soapEgeRequest.getYearExam()==3000||soapEgeRequest.getYearExam()<2000||soapEgeRequest.getYearExam()>calendar.get(Calendar.YEAR)){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyYearExamException().getMessage());
             throw emptyYearExamException();
         }else {
             egeRequestToDB.setYearExam(soapEgeRequest.getYearExam());
         }
 
         if(soapEgeRequest.getCodeSubject().isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyCodeSubjectException().getMessage());
             throw emptyCodeSubjectException();
         }else{
             egeRequestToDB.setCodeSubject(soapEgeRequest.getCodeSubject());
         }
 
         if(soapEgeRequest.getSubjectText().isEmpty()){
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptySubjectTextException().getMessage());
             throw emptySubjectTextException();
         }else{
             egeRequestToDB.setSubjectText(soapEgeRequest.getSubjectText());
@@ -509,6 +579,7 @@ public class EventServiceEndpoint implements EventServicePort {
                                                        soapEgeRequest.getApplicantPassportNumber().getPasNumGr(),String.valueOf(soapEgeRequest.getCodeSubject()));
 
       if(egeResults.size()==0){
+          logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+notFound().getMessage());
           throw notFound();
       }
 
@@ -579,6 +650,7 @@ public class EventServiceEndpoint implements EventServicePort {
             egeResult.setBlank1(getPathToBlank(freshestEgeResult,freshestEgeResult.getBlank1()));
             egeResult.setBlank2(getPathToBlank(freshestEgeResult,freshestEgeResult.getBlank2()));
         } catch (IOException e) {
+            logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+e.getMessage());
             e.printStackTrace();
         }
 
@@ -590,10 +662,11 @@ public class EventServiceEndpoint implements EventServicePort {
         EgeResultsResponseType e=new EgeResultsResponseType();
         e.setEgeResult(egeResult);
 
-
-        egeRequestToDB.setResponse(jaxbObjectToXML(e));
+        JAXBElement<EgeResultsResponseType> eds=new JAXBElement<EgeResultsResponseType>(new QName("coko.artefacts.x.ege.services._1_0",
+                "GetEgeResultResponse"),EgeResultsResponseType.class,e);
+        egeRequestToDB.setResponse(jaxbObjectToXML(eds));
         egeRequestDAO.saveEgeRequest(egeRequestToDB);
-
+        logger.info("Запрос на получение результатов ЕГЭ. Результат: успешно. ID: "+egeRequestToDB.getId());
         return e;
     }
 
@@ -601,11 +674,13 @@ public class EventServiceEndpoint implements EventServicePort {
     public AppealCancelResponseType cancelAppeal(AppealCancelRequestType appealCancelRequest) throws BiException {
 
         if(appealCancelRequest==null){
+            logger.info("Запрос на отмену апелляции. Результат: fail. Причина: "+emptyDictionaryContentRequest().getMessage());
             throw emptyAppealCancelRequest();
         }
 
         Appeal appealFromDB = appealDAO.findAppealByIdApplication(appealCancelRequest.getIdApplication());
          if(appealFromDB==null){
+             logger.info("Запрос на отмену апелляции. Результат: fail. Причина: "+notFound().getMessage());
             throw notFound();
         }
 
@@ -626,16 +701,17 @@ public class EventServiceEndpoint implements EventServicePort {
 
         AppealCancelResponseType appealCancelResponse=new AppealCancelResponseType();
         appealCancelResponse.setMessage("Заявление на отмену апелляции принято");
+        logger.info("Запрос на отмену апелляции. Результат: успешно. "+"Id:"+appealFromDB.getId());
         return appealCancelResponse;
     }
 
 
     public DictionaryContentType getDictionaryContent(DictionaryContentRequestType dictionaryContentRequest) throws BiException {
 
-
-
         if(dictionaryContentRequest==null){
+            logger.info("Запрос на получение данных справочника. Результат: fail. Причина: "+emptyDictionaryContentRequest().getMessage());
             throw emptyDictionaryContentRequest();
+
         }
 
         DictionaryContentType.Dictionary.Records records=new DictionaryContentType.Dictionary.Records();
@@ -662,7 +738,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
                 dictionary.setRecords(records);
                 dictionaryContentSchema.setDictionary(dictionary);
-
+                logger.info("Запрос на получение данных справочника service_type. Результат: успешно");
                 return dictionaryContentSchema;
 
             case "applicant_type":
@@ -679,7 +755,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
                 dictionary.setRecords(records);
                 dictionaryContentSchema.setDictionary(dictionary);
-
+                logger.info("Запрос на получение данных справочника applicant_type. Результат: успешно");
                 return dictionaryContentSchema;
 
             case "appeal_hearing_type":
@@ -696,7 +772,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
                 dictionary.setRecords(records);
                 dictionaryContentSchema.setDictionary(dictionary);
-
+                logger.info("Запрос на получение данных справочника appeal_hearing_type. Результат: успешно");
                 return dictionaryContentSchema;
 
             case "application_type":
@@ -713,7 +789,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
                 dictionary.setRecords(records);
                 dictionaryContentSchema.setDictionary(dictionary);
-
+                logger.info("Запрос на получение данных справочника application_type. Результат: успешно");
                 return dictionaryContentSchema;
 
             case "appeal_result_type":
@@ -729,7 +805,7 @@ public class EventServiceEndpoint implements EventServicePort {
                 }
                 dictionary.setRecords(records);
                 dictionaryContentSchema.setDictionary(dictionary);
-
+                logger.info("Запрос на получение данных справочника appeal_result_type. Результат: успешно");
                 return dictionaryContentSchema;
 
             case "appeal_type":
@@ -745,7 +821,7 @@ public class EventServiceEndpoint implements EventServicePort {
                 }
                 dictionary.setRecords(records);
                 dictionaryContentSchema.setDictionary(dictionary);
-
+                logger.info("Запрос на получение данных справочника appeal_type. Результат: успешно");
                 return dictionaryContentSchema;
 
             case "edu_organization":
@@ -761,7 +837,7 @@ public class EventServiceEndpoint implements EventServicePort {
                 }
                 dictionary.setRecords(records);
                 dictionaryContentSchema.setDictionary(dictionary);
-
+                logger.info("Запрос на получение данных справочника edu_organization. Результат: успешно");
                 return dictionaryContentSchema;
 
             case "examination_point":
@@ -779,7 +855,7 @@ public class EventServiceEndpoint implements EventServicePort {
 
                 dictionary.setRecords(records);
                 dictionaryContentSchema.setDictionary(dictionary);
-
+                logger.info("Запрос на получение данных справочника examination_point. Результат: успешно");
                 return dictionaryContentSchema;
 
 
@@ -800,10 +876,11 @@ public class EventServiceEndpoint implements EventServicePort {
 
                 dictionary.setRecords(records);
                 dictionaryContentSchema.setDictionary(dictionary);
-
+                logger.info("Запрос на получение данных справочника subject. Результат: успешно");
                 return dictionaryContentSchema;
 
             default:
+                logger.info("Запрос на получение данных справочника "+dictionaryContentRequest.getDictionary().getDictionaryName()+". Результат: fail. Причина: "+dictionaryNotExistException().getMessage());
                 throw dictionaryNotExistException();
 
 
@@ -843,7 +920,7 @@ public class EventServiceEndpoint implements EventServicePort {
         return list.get(maxIndexOfDate);
     }
 
-    private static String jaxbObjectToXML(EgeResultsResponseType egeResultsResponse){
+    private static String jaxbObjectToXML(JAXBElement<EgeResultsResponseType> egeResultsResponse){
         String xmlString="";
         try{
             JAXBContext context=JAXBContext.newInstance(EgeResultsResponseType.class);
@@ -859,70 +936,75 @@ public class EventServiceEndpoint implements EventServicePort {
         return xmlString;
     }
 
-    private String getPathToBlank(EgeResult egeResult, String blank) throws IOException {
-        StringBuffer absoluthPath=new StringBuffer().append("http://192.168.1.115/Users/shurupov/Desktop/FRXs/EGE/");
-        absoluthPath.append(egeResult.getSubject());
-        absoluthPath.append("/");
+    private String getPathToBlank(EgeResult egeResult, String blank) throws IOException, BiException {
+        try {
+            StringBuffer absoluthPath = new StringBuffer().append("http://192.168.1.115/Users/shurupov/Desktop/FRXs/EGE/");
+            absoluthPath.append(egeResult.getSubject());
+            absoluthPath.append("/");
 
-        String newDateExam=egeResult.getDate().replaceAll("-",".");
-        absoluthPath.append(newDateExam);
-        absoluthPath.append("/");
+            String newDateExam = egeResult.getDate().replaceAll("-", ".");
+            absoluthPath.append(newDateExam);
+            absoluthPath.append("/");
 
-        StringBuffer essentialPart=absoluthPath;
+            StringBuffer essentialPart = absoluthPath;
 
-        String connectionString="\\\\192.168.1.115\\Users\\shurupov\\Desktop\\FRXs\\EGE\\02\\2018.04.10\\";
+            String connectionString = "\\\\192.168.1.115\\Users\\shurupov\\Desktop\\FRXs\\EGE\\02\\2018.04.10\\";
 
-        String filePathPagesCount=connectionString+"pagescount.txt";
+            String filePathPagesCount = connectionString + "pagescount.txt";
 
-        List<String> listOfKeys=new ArrayList<>();
-        List<String> listOfValues=new ArrayList<>();
+            List<String> listOfKeys = new ArrayList<>();
+            List<String> listOfValues = new ArrayList<>();
 
-        File file = new File(filePathPagesCount);
-        String line;
+            File file = new File(filePathPagesCount);
+            String line;
 
-        BufferedReader reader=new BufferedReader(new FileReader(file));
+            BufferedReader reader = new BufferedReader(new FileReader(file));
 
-        while ((line=reader.readLine())!=null)
-        {
-            String[] parts=line.split(":",2);
-            if(parts.length>=2){
-                String key=parts[0];
-                String value=parts[1];
-                listOfKeys.add(key);
-                listOfValues.add(value);
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(":", 2);
+                if (parts.length >= 2) {
+                    String key = parts[0];
+                    String value = parts[1];
+                    listOfKeys.add(key);
+                    listOfValues.add(value);
 
-            }
-        }
-        reader.close();
-
-        int lineValue=0;
-        int capacityBlank=0;
-
-        for(int i=0;i<listOfKeys.size();i++){
-            lineValue=lineValue+Integer.valueOf(listOfValues.get(i));
-            if (listOfKeys.get(i).equalsIgnoreCase(blank)) {
-                capacityBlank=Integer.valueOf(listOfValues.get(i));
-                break;
                 }
             }
-        List<String> listOfPaths=new ArrayList<>();
-        String valueOfLineBlank;
-        StringBuffer pathForBlank=new StringBuffer(absoluthPath);
-        for(int i=0;i<capacityBlank;i++){
-            try(Stream<String> lines= Files.lines(Paths.get(connectionString+"list.txt"))){
-             //   valueOfLineBlank=lines.skip(lineValue-i-1).findFirst().get();
-                valueOfLineBlank=lines.skip(lineValue-capacityBlank+i).findFirst().get();
+            reader.close();
+
+            int lineValue = 0;
+            int capacityBlank = 0;
+
+            for (int i = 0; i < listOfKeys.size(); i++) {
+                lineValue = lineValue + Integer.valueOf(listOfValues.get(i));
+                if (listOfKeys.get(i).equalsIgnoreCase(blank)) {
+                    capacityBlank = Integer.valueOf(listOfValues.get(i));
+                    break;
+                }
             }
-            listOfPaths.add(valueOfLineBlank);
-            pathForBlank.append(listOfPaths.get(i).substring(0,1));
-            pathForBlank.append("/");
-            pathForBlank.append(listOfPaths.get(i).substring(1,2));
-            pathForBlank.append("/");
-            pathForBlank.append(valueOfLineBlank);
-            pathForBlank.append(".png;");
-            pathForBlank.append(essentialPart);
+            List<String> listOfPaths = new ArrayList<>();
+            String valueOfLineBlank;
+            StringBuffer pathForBlank = new StringBuffer(absoluthPath);
+            for (int i = 0; i < capacityBlank; i++) {
+                try (Stream<String> lines = Files.lines(Paths.get(connectionString + "list.txt"))) {
+                    //   valueOfLineBlank=lines.skip(lineValue-i-1).findFirst().get();
+                    valueOfLineBlank = lines.skip(lineValue - capacityBlank + i).findFirst().get();
+                }
+                listOfPaths.add(valueOfLineBlank);
+                pathForBlank.append(listOfPaths.get(i).substring(0, 1));
+                pathForBlank.append("/");
+                pathForBlank.append(listOfPaths.get(i).substring(1, 2));
+                pathForBlank.append("/");
+                pathForBlank.append(valueOfLineBlank);
+                pathForBlank.append(".png;");
+                pathForBlank.append(essentialPart);
+                return pathForBlank.substring(0, pathForBlank.lastIndexOf(";"));
+            }
+        }catch (IOException e){
+            throw Error.pathToBlankException();
         }
-        return pathForBlank.substring(0,pathForBlank.lastIndexOf(";"));
+           return null;
+
     }
 
 

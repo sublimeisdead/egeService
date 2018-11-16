@@ -74,6 +74,12 @@ public class Error {
         return generateException(ErrorCode.EMPTY_DICTIONARY_CONTENT_REQUEST, message); //
     }
 
+    public static BiException pathToBlankException() {
+
+        String message = "Ошибка при построении пути к файлам результатов экзамена";
+        return generateException(ErrorCode.PATH_TO_FILE_EXCEPTION, message); //
+    }
+
     public static BiException emptyAppealCancelRequest() {
 
         String message = "Запрос на отмену апелляции пуст";

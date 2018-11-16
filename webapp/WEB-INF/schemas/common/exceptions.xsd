@@ -19,6 +19,11 @@
                     <documentation>Обнаружено неуникальное значение </documentation>
                 </annotation>
             </enumeration>
+            <enumeration value="PATH_TO_FILE_EXCEPTION">
+                <annotation>
+                    <documentation>Ошибка при построении пути к файлам с результатами экзаменов</documentation>
+                </annotation>
+            </enumeration>
             <enumeration value="EMPTY_DIMENSIONS_EXCEPTION">
                 <annotation>
                     <documentation>Отсутствует, либо пуст обязательный элемент Dimensions </documentation>
