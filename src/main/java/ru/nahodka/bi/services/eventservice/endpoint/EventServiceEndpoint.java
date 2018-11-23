@@ -938,7 +938,8 @@ public class EventServiceEndpoint implements EventServicePort {
 
     private String getPathToBlank(EgeResult egeResult, String blank) throws IOException, BiException {
         try {
-            StringBuffer absoluthPath = new StringBuffer().append("http://192.168.1.115/Users/shurupov/Desktop/FRXs/EGE/");
+          //  StringBuffer absoluthPath = new StringBuffer().append("http://192.168.1.115/Users/shurupov/Desktop/FRXs/EGE/");
+            StringBuffer absoluthPath = new StringBuffer().append(getPath());
             absoluthPath.append(egeResult.getSubject());
             absoluthPath.append("/");
 
@@ -948,7 +949,8 @@ public class EventServiceEndpoint implements EventServicePort {
 
             StringBuffer essentialPart = absoluthPath;
 
-            String connectionString = "\\\\192.168.1.115\\Users\\shurupov\\Desktop\\FRXs\\EGE\\02\\2018.04.10\\";
+            String connectionString= String.valueOf(absoluthPath).replace("http:","").replace("/","\\\\");
+        // String connectionString = "\\\\192.168.1.115\\Users\\shurupov\\Desktop\\FRXs\\EGE\\02\\2018.04.10\\";
 
             String filePathPagesCount = connectionString + "pagescount.txt";
 
@@ -998,13 +1000,28 @@ public class EventServiceEndpoint implements EventServicePort {
                 pathForBlank.append(valueOfLineBlank);
                 pathForBlank.append(".png;");
                 pathForBlank.append(essentialPart);
-                return pathForBlank.substring(0, pathForBlank.lastIndexOf(";"));
+
             }
-        }catch (IOException e){
+            return pathForBlank.substring(0, pathForBlank.lastIndexOf(";"));
+        }catch (Exception e){
+            logger.info(e.getMessage());
             throw Error.pathToBlankException();
         }
-           return null;
 
+
+    }
+
+    private String getPath() throws IOException {
+        String pathToBlank=null;
+        Properties properties=new Properties();
+        FileInputStream fis;
+      //  String pathToProperties="./config.properties";
+        String pathToProperties=System.getProperty("config");
+        fis=new FileInputStream(pathToProperties);
+        properties.load(fis);
+        fis.close();
+        pathToBlank=properties.getProperty("pathtoblank");
+        return pathToBlank;
     }
 
 

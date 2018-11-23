@@ -13,6 +13,9 @@
         <context:exclude-filter type="regex" expression="ru.nahodka.bi.core.notifications..*"/>
     </context:component-scan>
 
+<!-- <context:property-placeholder system-properties-mode="OVERRIDE" location="file:G://java/ege_service_copy/config.properties"/> // working!!!!!-->
+    <context:property-placeholder system-properties-mode="OVERRIDE" location="file:#{systemProperties['config']}"/>
+
     <!--    <bean id="dataSourceBuilder" class="ru.nahodka.bi.core.connection.DataSourceBuilder"/>
 
         <bean id="factory" class="ru.nahodka.bi.core.common.model.factory.FactTableHandlerFactory"/>
@@ -30,25 +33,25 @@
             </list>
         </property>
     </bean>
-
-    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+<!--
+    <bean id= "propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location">
-            <value>classpath:database.properties</value>
+            <value>file:#{systemProperties['user.home']}/java/ege_service_copy/config.properties</value>
         </property>
     </bean>
-
+-->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName">
             <value>org.postgresql.Driver</value>
         </property>
         <property name="url">
-            <value>jdbc:postgresql://192.168.1.218:5432/ege_results</value>
+            <value>${dburlresults}</value>
         </property>
         <property name="username">
-            <value>postgres</value>
+            <value>${dbuser}</value>
         </property>
         <property name="password">
-            <value>1</value>
+            <value>${dbpassword}</value>
         </property>
     </bean>
 
@@ -76,13 +79,13 @@
             <value>org.postgresql.Driver</value>
         </property>
         <property name="url">
-            <value>jdbc:postgresql://192.168.1.218:5432/ege_requests</value>
+            <value>${dburlrequests}</value>
         </property>
         <property name="username">
-            <value>postgres</value>
+            <value>${dbuser}</value>
         </property>
         <property name="password">
-            <value>1</value>
+            <value>${dbpassword}</value>
         </property>
     </bean>
 
