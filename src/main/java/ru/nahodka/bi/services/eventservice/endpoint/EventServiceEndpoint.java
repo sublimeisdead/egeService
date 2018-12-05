@@ -555,7 +555,7 @@ public class EventServiceEndpoint implements EventServicePort {
             logger.info("Запрос на получение результатов ЕГЭ. Результат: fail. Причина: "+emptyYearExamException().getMessage());
             throw emptyYearExamException();
         }else {
-            egeRequestToDB.setYearExam(soapEgeRequest.getYearExam());
+            egeRequestToDB.setYearExam(String.valueOf(soapEgeRequest.getYearExam()));
         }
 
         if(soapEgeRequest.getCodeSubject().isEmpty()){
@@ -939,17 +939,25 @@ public class EventServiceEndpoint implements EventServicePort {
     private String getPathToBlank(EgeResult egeResult, String blank) throws IOException, BiException {
         try {
           //  StringBuffer absoluthPath = new StringBuffer().append("http://192.168.1.115/Users/shurupov/Desktop/FRXs/EGE/");
-            StringBuffer absoluthPath = new StringBuffer().append(getPath());
-            absoluthPath.append(egeResult.getSubject());
-            absoluthPath.append("/");
+            StringBuffer internalUrl = new StringBuffer().append(getInternalUrl());
+
+            String newCodeSubj=null;
+            String codeSubject=egeResult.getSubject();
+            if(codeSubject.matches(".")){
+                newCodeSubj="0"+codeSubject;
+            }else{
+                newCodeSubj=codeSubject;
+            }
+            internalUrl.append(newCodeSubj);
+            internalUrl.append("/");
 
             String newDateExam = egeResult.getDate().replaceAll("-", ".");
-            absoluthPath.append(newDateExam);
-            absoluthPath.append("/");
+            internalUrl.append(newDateExam);
+            internalUrl.append("/");
 
-            StringBuffer essentialPart = absoluthPath;
+         //   StringBuffer essentialPart = internalUrl;
 
-            String connectionString= String.valueOf(absoluthPath).replace("http:","").replace("/","\\\\");
+            String connectionString= String.valueOf(internalUrl).replace("http:","").replace("/","\\\\");
         // String connectionString = "\\\\192.168.1.115\\Users\\shurupov\\Desktop\\FRXs\\EGE\\02\\2018.04.10\\";
 
             String filePathPagesCount = connectionString + "pagescount.txt";
@@ -986,7 +994,14 @@ public class EventServiceEndpoint implements EventServicePort {
             }
             List<String> listOfPaths = new ArrayList<>();
             String valueOfLineBlank;
-            StringBuffer pathForBlank = new StringBuffer(absoluthPath);
+
+            StringBuffer externalUrl = new StringBuffer().append(getExternalUrl());
+            externalUrl.append(newCodeSubj);
+            externalUrl.append("/");
+            externalUrl.append(newDateExam);
+            externalUrl.append("/");
+            StringBuffer essentialPart = externalUrl;
+            StringBuffer pathForBlank = new StringBuffer(externalUrl);
             for (int i = 0; i < capacityBlank; i++) {
                 try (Stream<String> lines = Files.lines(Paths.get(connectionString + "list.txt"))) {
                     //   valueOfLineBlank=lines.skip(lineValue-i-1).findFirst().get();
@@ -1011,8 +1026,8 @@ public class EventServiceEndpoint implements EventServicePort {
 
     }
 
-    private String getPath() throws IOException {
-        String pathToBlank=null;
+    private String getInternalUrl() throws IOException {
+        String internalUrl=null;
         Properties properties=new Properties();
         FileInputStream fis;
       //  String pathToProperties="./config.properties";
@@ -1020,8 +1035,21 @@ public class EventServiceEndpoint implements EventServicePort {
         fis=new FileInputStream(pathToProperties);
         properties.load(fis);
         fis.close();
-        pathToBlank=properties.getProperty("pathtoblank");
-        return pathToBlank;
+        internalUrl=properties.getProperty("internalurl");
+        return internalUrl;
+    }
+
+    private String getExternalUrl() throws IOException {
+        String externalUrl=null;
+        Properties properties=new Properties();
+        FileInputStream fis;
+        //  String pathToProperties="./config.properties";
+        String pathToProperties=System.getProperty("config");
+        fis=new FileInputStream(pathToProperties);
+        properties.load(fis);
+        fis.close();
+        externalUrl=properties.getProperty("externalurl");
+        return externalUrl;
     }
 
 

@@ -143,7 +143,7 @@ public class EgeRequest implements Serializable {
 
     @Basic
     @Column(name = "year")
-    protected Short yearExam;
+    protected String yearExam;
 
 
     @Basic
@@ -376,11 +376,11 @@ public class EgeRequest implements Serializable {
         this.examineePassportNumber = examineePassportNumber;
     }
 
-    public Short getYearExam() {
+    public String getYearExam() {
         return yearExam;
     }
 
-    public void setYearExam(Short yearExam) {
+    public void setYearExam(String yearExam) {
         this.yearExam = yearExam;
     }
 
