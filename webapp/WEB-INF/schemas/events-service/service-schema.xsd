@@ -2,10 +2,10 @@
 <xs:schema
         elementFormDefault="qualified"
         xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:tns="urn://x-artefacts-coko/ege/services/1.0.0"
-        targetNamespace="urn://x-artefacts-coko/ege/services/1.0.0"
+        xmlns:tns="urn://x-artefacts-coko/ege/services/1.0.1"
+        targetNamespace="urn://x-artefacts-coko/ege/services/1.0.1"
         >
-    <xs:import namespace="urn://x-artefacts-coko/ege/services/exceptions/1.0.0"
+    <xs:import namespace="urn://x-artefacts-coko/ege/services/exceptions/1.0.1"
             schemaLocation="../common/exceptions.xsd"/>
 
 
@@ -244,7 +244,7 @@
                         <xs:element name="PartC">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="Mask" type="xs:string" />
+                                    <xs:element name="Mask" type="xs:string"  />
                                     <xs:element name="TasksDone" type="xs:string" />
                                 </xs:sequence>
                             </xs:complexType>
@@ -252,7 +252,7 @@
                         <xs:element name="PartD">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="Mask" type="xs:string" />
+                                    <xs:element name="Mask" type="xs:string" minOccurs="0" />
                                     <xs:element name="TasksDone" type="xs:string" />
                                 </xs:sequence>
                             </xs:complexType>
@@ -280,7 +280,7 @@
                         <xs:element name="Blank2" type="xs:string" />
                         <xs:element name="MinMark" type="xs:string" />
                         <xs:element name="DateExam" type="xs:string" />
-                        <xs:element name="DatePublish" type="xs:string" />
+                        <xs:element name="DatePublish" type="xs:string" minOccurs="0"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -296,6 +296,7 @@
         </xs:annotation>
 
             <xs:sequence>
+
                 <xs:element name="IdApplication" type="xs:string" minOccurs="1" nillable="false">
                     <xs:annotation>
                         <xs:documentation>
@@ -312,8 +313,9 @@
                 Ответ на запрос на отмену запроса на апелляцию
             </xs:documentation>
         </xs:annotation>
-
             <xs:sequence>
+                <xs:element name="IdApplication" type="xs:string" />
+                <xs:element name="Result" type="xs:string"/>
                 <xs:element name="Message" type="xs:string" minOccurs="1" nillable="false">
                     <xs:annotation>
                         <xs:documentation>
@@ -412,12 +414,9 @@
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
-                        <xs:element name="email_address" type="tns:EmailAddressType">
+                        <xs:element name="email_address" type="tns:EmailAddressType"/>
+                        <xs:element name="phone" type="tns:PhoneNumberRFType"/>
 
-                        </xs:element>
-                        <xs:element name="phone" type="tns:PhoneNumberRFType">
-
-                        </xs:element>
                         <xs:element name="ApplicantPasDate">
                             <xs:complexType>
                                 <xs:sequence>
@@ -464,6 +463,8 @@
         </xs:annotation>
 
             <xs:sequence>
+                <xs:element name="IdApplication" type="xs:string" />
+                <xs:element name="Result" type="xs:string"></xs:element>
                 <xs:element name="Message" type="xs:string" minOccurs="1" nillable="false">
                     <xs:annotation>
                         <xs:documentation>

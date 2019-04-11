@@ -334,6 +334,8 @@ public class EventServiceEndpoint implements EventServicePort {
 
         AppealResponseType response=new AppealResponseType();
         response.setMessage("Заявление на апелляцию успешно сохранено");
+        response.setIdApplication(appealToDB.getIdApplication());
+        response.setResult("3");
         appealToDB.setResponsedAt(new Timestamp(System.currentTimeMillis()));
 
         AppealRequestState appealRequestState=new AppealRequestState();
@@ -701,6 +703,8 @@ public class EventServiceEndpoint implements EventServicePort {
 
         AppealCancelResponseType appealCancelResponse=new AppealCancelResponseType();
         appealCancelResponse.setMessage("Заявление на отмену апелляции принято");
+        appealCancelResponse.setIdApplication(appealFromDB.getIdApplication());
+        appealCancelResponse.setResult("IN_PROGRESS");
         logger.info("Запрос на отмену апелляции. Результат: успешно. "+"Id:"+appealFromDB.getId());
         return appealCancelResponse;
     }
@@ -956,8 +960,16 @@ public class EventServiceEndpoint implements EventServicePort {
             internalUrl.append("/");
 
          //   StringBuffer essentialPart = internalUrl;
+            String connectionString;
+            if(getOsType().equalsIgnoreCase("windows")){
+                connectionString= String.valueOf(internalUrl).replace("http:","").replace("/","\\\\");
+                logger.info(connectionString);
+            }else{
+                connectionString= String.valueOf(internalUrl).replace("http:","");
+                logger.info(connectionString);
+            }
 
-            String connectionString= String.valueOf(internalUrl).replace("http:","").replace("/","\\\\");
+
         // String connectionString = "\\\\192.168.1.115\\Users\\shurupov\\Desktop\\FRXs\\EGE\\02\\2018.04.10\\";
 
             String filePathPagesCount = connectionString + "pagescount.txt";
@@ -1050,6 +1062,18 @@ public class EventServiceEndpoint implements EventServicePort {
         fis.close();
         externalUrl=properties.getProperty("externalurl");
         return externalUrl;
+    }
+    private String getOsType() throws IOException {
+        String osType=null;
+        Properties properties=new Properties();
+        FileInputStream fis;
+        //  String pathToProperties="./config.properties";
+        String pathToProperties=System.getProperty("config");
+        fis=new FileInputStream(pathToProperties);
+        properties.load(fis);
+        fis.close();
+        osType=properties.getProperty("ostype");
+        return osType;
     }
 
 

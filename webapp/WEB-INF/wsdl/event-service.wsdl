@@ -1,11 +1,11 @@
 <wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
                   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-                  xmlns:tns="urn://x-artefacts-coko/ege/services/1.0.0"
-                  xmlns:exceptions="urn://x-artefacts-coko/ege/services/exceptions/1.0.0"
-                  targetNamespace="urn://x-artefacts-coko/ege/services/1.0.0">
+                  xmlns:tns="urn://x-artefacts-coko/ege/services/1.0.1"
+                  xmlns:exceptions="urn://x-artefacts-coko/ege/services/exceptions/1.0.1"
+                  targetNamespace="urn://x-artefacts-coko/ege/services/1.0.1">
     <wsdl:types>
         <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                    targetNamespace="urn://x-artefacts-coko/ege/services/1.0.0">
+                    targetNamespace="urn://x-artefacts-coko/ege/services/1.0.1">
             <xsd:include schemaLocation="../schemas/events-service/service-schema.xsd"/>
         </xsd:schema>
     </wsdl:types>
